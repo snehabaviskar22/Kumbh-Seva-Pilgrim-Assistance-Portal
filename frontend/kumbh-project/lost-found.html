@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost &amp; Found – Kumbh Mela Nashik 2027</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .lf-actions { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-bottom:50px; }
+    .lf-action-card {
+      text-align:center; padding:32px 20px; border-radius:18px;
+      border:2px solid; transition:all 0.3s; cursor:pointer;
+    }
+    .lf-action-card.lost { background:rgba(192,57,43,0.1); border-color:rgba(192,57,43,0.4); }
+    .lf-action-card.found { background:rgba(39,174,96,0.1); border-color:rgba(39,174,96,0.4); }
+    .lf-action-card.view { background:rgba(52,152,219,0.1); border-color:rgba(52,152,219,0.4); }
+    .lf-action-card.track { background:rgba(232,100,10,0.08); border-color:rgba(232,100,10,0.3); }
+    .lf-action-card:hover { transform:translateY(-6px); box-shadow:0 16px 40px rgba(0,0,0,0.3); }
+    .lf-action-card .a-icon { font-size:3rem; margin-bottom:12px; }
+    .lf-action-card h3 { color:var(--text-main); font-size:1.05rem; margin-bottom:6px; }
+    .lf-action-card p { font-size:0.82rem; opacity:0.7; }
+    .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:16px; margin-bottom:50px; }
+    .stat-box {
+      text-align:center; padding:20px; border-radius:14px;
+      background:#FFFFFF; border:1px solid rgba(232,100,10,0.1);
+    }
+    .stat-box .s-num { font-size:2.2rem; font-weight:800; display:block; }
+    .stat-box .s-lbl { color:#a08060; font-size:0.82rem; }
+    .stat-box.red .s-num { color:#e74c3c; }
+    .stat-box.green .s-num { color:#2ecc71; }
+    .stat-box.blue .s-num { color:#3498db; }
+    .stat-box.gold .s-num { color:var(--orange); }
+    .items-table-wrap { margin-top:10px; }
+    .items-table-wrap .tabs { display:flex; gap:10px; margin-bottom:16px; }
+    .items-table-wrap .tab-btn { padding:8px 20px; border-radius:20px; border:1px solid rgba(232,100,10,0.25); background:transparent; color:var(--text-main); cursor:pointer; font-size:0.85rem; }
+    .items-table-wrap .tab-btn.active { background:var(--orange); color:white; border-color:var(--orange); }
+    .item-row {
+      display:grid; grid-template-columns:60px 1fr 1fr 120px 100px 80px;
+      gap:12px; padding:14px 16px; border-bottom:1px solid rgba(232,100,10,0.07);
+      align-items:center; transition:background 0.2s;
+    }
+    .item-row:hover { background:rgba(232,100,10,0.06); }
+    .item-row.header { background:rgba(232,100,10,0.15); font-size:0.82rem; color:var(--orange); font-weight:600; }
+    .item-row .item-id { color:var(--text-muted); font-size:0.82rem; }
+    .item-row .item-name { color:var(--text-main); font-size:0.9rem; font-weight:500; }
+    .item-row .item-cat { color:#a08060; font-size:0.82rem; }
+    .item-row .item-loc { color:#a08060; font-size:0.82rem; }
+    .item-row .item-date { color:#a08060; font-size:0.8rem; }
+    .view-all { text-align:center; margin-top:20px; }
+    @media(max-width:768px){
+      .item-row{ grid-template-columns:1fr 1fr; }
+      .item-row .item-id,.item-row .item-loc,.item-row .item-date{ display:none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="ghats.html">Ghat Maps</a></li>
+      <li><a href="facilities.html">Facilities</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="lost-found.html" class="active">Lost &amp; Found</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+      <li><button onclick="logout()" class="btn">Logout</button></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🏠 Home</a><a href="about.html">📿 About</a><a href="ghats.html">🌊 Ghat Maps</a>
+    <a href="facilities.html">🏥 Facilities</a><a href="schedule.html">📅 Schedule</a>
+    <a href="lost-found.html">🔍 Lost &amp; Found</a><a href="contact.html">📞 Contact</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+    </div>
+  <div class="page-hero">
+    <span class="om-decor">🔍</span>
+    <h1>Lost &amp; Found Portal</h1>
+    <p>Report, search, and track lost or found items during Kumbh Mela 2027</p>
+  </div>
+
+  <section class="section">
+    <div class="stats-row">
+      
+<div class="stat-box red">
+  <span class="s-num" id="lostCount">0</span>
+  <span class="s-lbl">Items Lost</span>
+</div>
+
+<div class="stat-box green">
+  <span class="s-num" id="foundCount">0</span>
+  <span class="s-lbl">Items Found</span>
+</div>
+
+<div class="stat-box blue">
+
+<span class="s-num" id="returnedCount">0</span>
+
+  <span class="s-lbl">Returned</span>
+</div>
+
+<div class="stat-box gold">
+  <span class="s-num" id="pendingCount">0</span>
+
+  <span class="s-lbl">Pending Claims</span>
+</div>
+
+
+</div>
+
+    <div class="lf-actions">
+      <a href="lf-report-lost.html" class="lf-action-card lost" style="text-decoration:none;">
+        <div class="a-icon">🚫</div>
+        <h3>Report Lost Item</h3>
+        <p>Submit details of something you've lost</p>
+      </a>
+      <a href="lf-report-found.html" class="lf-action-card found" style="text-decoration:none;">
+        <div class="a-icon">✅</div>
+        <h3>Report Found Item</h3>
+        <p>Hand in something you've found</p>
+      </a>
+      <a href="lf-view-lost.html" class="lf-action-card view" style="text-decoration:none;">
+        <div class="a-icon">📋</div>
+        <h3>View Lost Items</h3>
+        <p>Browse all reported lost items</p>
+      </a>
+      <a href="lf-track.html" class="lf-action-card track" style="text-decoration:none;">
+        <div class="a-icon">📱</div>
+        <h3>Track Status</h3>
+        <p>Check status of your report</p>
+      </a>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search by item name, ID, or category..." id="searchInput">
+      <button onclick="doSearch()">Search</button>
+    </div>
+
+    <div class="items-table-wrap">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="filterItems('all',this)">All Recent</button>
+        <button class="tab-btn" onclick="filterItems('lost',this)">Lost</button>
+        <button class="tab-btn" onclick="filterItems('found',this)">Found</button>
+      </div>
+      <div style="border:1px solid rgba(232,100,10,0.12);border-radius:12px;overflow:hidden;">
+        <div class="item-row header">
+          <span>ID</span><span>Item</span><span>Category</span>
+          <span>Location</span><span>Date</span><span>Status</span>
+        </div>
+        <div class="item-row" data-type="lost">
+          <span class="item-id">#LF001</span>
+          <span class="item-name">👜 Black Backpack</span>
+          <span class="item-cat">Bag/Luggage</span>
+          <span class="item-loc">Ram Kund</span>
+          <span class="item-date">Jul 21</span>
+          <span><span class="badge badge-lost">Lost</span></span>
+        </div>
+        <div class="item-row" data-type="found">
+          <span class="item-id">#LF002</span>
+          <span class="item-name">📱 Samsung Galaxy</span>
+          <span class="item-cat">Electronics</span>
+          <span class="item-loc">Tapovan</span>
+          <span class="item-date">Jul 21</span>
+          <span><span class="badge badge-found">Found</span></span>
+        </div>
+        <div class="item-row" data-type="lost">
+          <span class="item-id">#LF003</span>
+          <span class="item-name">💳 Wallet (Brown)</span>
+          <span class="item-cat">Wallet/Money</span>
+          <span class="item-loc">Lakshman Kund</span>
+          <span class="item-date">Jul 22</span>
+          <span><span class="badge badge-lost">Lost</span></span>
+        </div>
+        <div class="item-row" data-type="found">
+          <span class="item-id">#LF004</span>
+          <span class="item-name">👶 Child (Boy, ~5 yrs)</span>
+          <span class="item-cat">Person</span>
+          <span class="item-loc">Ram Kund Gate</span>
+          <span class="item-date">Jul 22</span>
+          <span><span class="badge badge-returned">Reunited</span></span>
+        </div>
+        <div class="item-row" data-type="lost">
+          <span class="item-id">#LF005</span>
+          <span class="item-name">💍 Gold Necklace</span>
+          <span class="item-cat">Jewellery</span>
+          <span class="item-loc">Sita Gund</span>
+          <span class="item-date">Jul 23</span>
+          <span><span class="badge badge-pending">Pending</span></span>
+        </div>
+        <div class="item-row" data-type="found">
+          <span class="item-id">#LF006</span>
+          <span class="item-name">🏴 Black Purse</span>
+          <span class="item-cat">Bag/Luggage</span>
+          <span class="item-loc">Kapileshwar</span>
+          <span class="item-date">Jul 24</span>
+          <span><span class="badge badge-found">Found</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="view-all">
+      <a href="lf-view-lost.html" class="btn btn-outline">View All Lost Items</a>
+      <a href="lf-view-found.html" class="btn btn-gold" style="margin-left:12px;">View All Found Items</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col"><h4>🕉 Kumbh Mela Nashik</h4><p>Helping pilgrims stay connected and safe.</p></div>
+      <div class="footer-col"><h4>L&amp;F Module</h4><a href="lf-report-lost.html">Report Lost</a><a href="lf-report-found.html">Report Found</a><a href="lf-track.html">Track Status</a><a href="lf-admin.html">Admin</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="emergency.html">Emergency</a><a href="contact.html">Contact Us</a></div>
+      <div class="footer-col"><h4>Emergency</h4><p>Police: 100 | Ambulance: 108</p></div>
+    </div>
+    <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+    <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+  </footer>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* NAVBAR */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar')
+      .classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  document.getElementById('hamburger')
+    .addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('open');
+  });
+
+  /* FILTER */
+  window.filterItems = function(type, btn){
+
+    document.querySelectorAll('.tab-btn')
+      .forEach(b => b.classList.remove('active'));
+
+    btn.classList.add('active');
+
+    document.querySelectorAll('.item-row:not(.header)')
+      .forEach(r => {
+
+        r.style.display =
+        (type === 'all' || r.dataset.type === type)
+        ? 'grid'
+        : 'none';
+
+      });
+
+  };
+
+  /* SEARCH */
+  window.doSearch = function(){
+
+    const q =
+    document.getElementById('searchInput')
+    .value
+    .toLowerCase();
+
+    document.querySelectorAll('.item-row:not(.header)')
+      .forEach(r => {
+
+        r.style.display =
+        r.textContent.toLowerCase().includes(q)
+        ? 'grid'
+        : 'none';
+
+      });
+
+  };
+
+  /* LOGIN CHECK */
+  if(localStorage.getItem("loggedIn") !== "true"){
+
+      alert("Please login first");
+
+      window.location.href = "user-login.html";
+
+  }
+
+  /* DASHBOARD API */
+  async function loadDashboardData(){
+
+      try{
+
+          const response =
+          await fetch("http://localhost:8080/api/dashboard");
+
+          const data = await response.json();
+
+          document.getElementById("lostCount").innerText =
+          data.lostCount;
+
+          document.getElementById("foundCount").innerText =
+          data.foundCount;
+
+          document.getElementById("returnedCount").innerText =
+          data.returnedCount;
+
+          document.getElementById("pendingCount").innerText =
+          data.pendingCount;
+
+      }
+      catch(error){
+
+          console.log("Dashboard Error:", error);
+
+      }
+
+  }
+
+  loadDashboardData();
+
+});
+
+/* LOGOUT */
+function logout(){
+
+   localStorage.removeItem("loggedIn");
+
+   fetch("http://localhost:8080/logout", {
+      credentials: "include"
+   })
+   .then(() => {
+
+      window.location.href = "index.html";
+
+   })
+   .catch(err => console.error(err));
+
+}
+
+</script>
+
+
+
+  
+</body>
+</html>

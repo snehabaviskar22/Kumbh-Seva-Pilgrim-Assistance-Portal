@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Item – Kumbh Mela L&F</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .claim-card{
+      background:#FFFFFF;
+      border:1px solid rgba(232,100,10,0.2);
+      border-radius:18px;
+      padding:36px;
+      max-width:680px;
+      margin:0 auto;
+    }
+
+    .claim-card h2{
+      color:var(--orange);
+      margin-bottom:6px;
+      font-size:1.5rem;
+    }
+
+    .claim-card .sub{
+      color:#a08060;
+      margin-bottom:28px;
+      font-size:0.9rem;
+    }
+
+    .form-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+
+    @media(max-width:600px){
+      .form-row{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .success-box{
+      display:none;
+      background:rgba(232,100,10,0.08);
+      border:1px solid rgba(232,100,10,0.3);
+      border-radius:12px;
+      padding:24px;
+      text-align:center;
+      margin-top:20px;
+    }
+
+    .success-box h3{
+      color:var(--orange);
+      margin-bottom:8px;
+    }
+
+    .success-box p{
+      color:var(--text-muted);
+      font-size:0.9rem;
+    }
+
+    .lf-nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:30px;
+    }
+
+    .lf-nav a{
+      padding:8px 16px;
+      border-radius:20px;
+      background:#FFFFFF;
+      border:1px solid rgba(232,100,10,0.15);
+      color:var(--text-main);
+      font-size:0.85rem;
+      transition:all 0.2s;
+    }
+
+    .lf-nav a:hover{
+      background:rgba(232,100,10,0.15);
+      color:var(--orange);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar" id="navbar">
+
+    <div class="navbar-brand">
+      <span class="om">🕉</span>
+      <span>Kumbh Mela Nashik</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="lost-found.html">Lost & Found</a></li>
+
+      <li>
+        <a href="emergency.html" class="btn-emergency">
+          🚨 Emergency
+        </a>
+      </li>
+    </ul>
+
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+
+    <a href="index.html">🏠 Home</a>
+
+    <a href="lost-found.html">
+      🔍 Lost & Found
+    </a>
+
+    <a href="emergency.html" style="color:#e74c3c;">
+      🚨 Emergency
+    </a>
+
+  </div>
+
+  <div class="page-hero">
+
+    <h1>🔐 Claim a Found Item</h1>
+
+    <p>
+      Provide proof of ownership to claim your item
+    </p>
+
+  </div>
+
+  <section class="section">
+
+    <div class="lf-nav">
+
+      <a href="lost-found.html">
+        ← L&F Home
+      </a>
+
+      <a href="lf-view-found.html">
+        ✅ Found Items
+      </a>
+
+      <a href="lf-track.html">
+        📱 Track Status
+      </a>
+
+    </div>
+
+    <div class="claim-card">
+
+      <h2>🔐 Claim Request Form</h2>
+
+      <p class="sub">
+        Your claim will be reviewed by our admin team within 24 hours
+      </p>
+
+      <form id="claimForm" onsubmit="return submitClaim(event)">
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label>Your Full Name *</label>
+
+            <input
+            type="text"
+            id="fullName"
+            required
+            placeholder="As on ID proof">
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Phone Number *</label>
+
+            <input
+            type="tel"
+            id="phone"
+            required
+            placeholder="+91 XXXXX XXXXX">
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Item Reference ID *</label>
+
+          <input
+          type="text"
+          id="itemId"
+          value="#LF002"
+          required>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Proof of Ownership *</label>
+
+          <textarea
+          id="proof"
+          required
+          placeholder="Describe unique details only you would know..."></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>ID Proof Type</label>
+
+          <select id="idType">
+
+            <option>Aadhaar Card</option>
+            <option>PAN Card</option>
+            <option>Voter ID</option>
+            <option>Passport</option>
+            <option>Driving License</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>ID Proof Number *</label>
+
+          <input
+          type="text"
+          id="idNumber"
+          required
+          placeholder="Last 4 digits only for privacy">
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Additional Notes</label>
+
+          <textarea
+          id="notes"
+          placeholder="Any additional information to support your claim..."></textarea>
+
+        </div>
+
+        <button
+        type="submit"
+        class="btn btn-gold"
+        style="width:100%;">
+
+          Submit Claim Request →
+
+        </button>
+
+      </form>
+
+      <div class="success-box" id="successBox">
+
+        <h3>✅ Claim Submitted!</h3>
+
+        <p>
+          Please carry your original ID proof when collecting the item.
+        </p>
+
+        <div style="margin-top:16px;">
+
+          <a href="lf-track.html" class="btn btn-primary">
+            Track Claim Status
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer class="footer">
+
+    <div style="text-align:center;padding-bottom:20px;">
+
+      <div class="footer-shimmer">
+        🕉 जय श्री राम 🕉
+      </div>
+
+      <p class="footer-copy">
+        © 2027 Kumbh Seva Pilgrim Portal, Nashik.
+      </p>
+
+    </div>
+
+  </footer>
+
+<script>
+
+window.addEventListener('scroll', () => {
+
+  document.getElementById('navbar')
+  .classList.toggle('scrolled', scrollY > 60);
+
+});
+
+document.getElementById('hamburger')
+.addEventListener('click', () => {
+
+  document.getElementById('mobileMenu')
+  .classList.toggle('open');
+
+});
+
+function submitClaim(e){
+
+    e.preventDefault();
+
+    const data = {
+
+        fullName:
+        document.getElementById("fullName").value,
+
+        phone:
+        document.getElementById("phone").value,
+
+        itemId:
+        document.getElementById("itemId").value.replace("#LF",""),
+
+        proof:
+        document.getElementById("proof").value,
+
+        idType:
+        document.getElementById("idType").value,
+
+        idNumber:
+        document.getElementById("idNumber").value,
+
+        notes:
+        document.getElementById("notes").value
+
+    };
+
+    fetch("http://localhost:8080/api/claims", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
+
+    })
+
+    .then(res => res.json())
+
+    .then(response => {
+
+        document.getElementById("claimForm").style.display = "none";
+
+        document.getElementById("successBox").style.display = "block";
+
+    })
+
+    .catch(err => {
+
+        console.log(err);
+
+        alert("Error submitting claim");
+
+    });
+
+    return false;
+}
+
+</script>
+
+</body>
+</html>

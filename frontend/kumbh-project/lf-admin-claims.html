@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Claims Verification – Kumbh Mela L&amp;F</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .claim-review-card { background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); border-radius:16px; padding:24px; margin-bottom:20px; }
+    .claim-review-card.approved { border-color:rgba(39,174,96,0.4); background:rgba(39,174,96,0.05); }
+    .claim-review-card.rejected { border-color:rgba(192,57,43,0.4); background:rgba(192,57,43,0.05); }
+    .claim-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+    .claim-head h3 { color:var(--orange); font-size:1.05rem; }
+    .claim-body { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    @media(max-width:600px){.claim-body{grid-template-columns:1fr;}}
+    .claim-field .label { color:var(--text-muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:3px; }
+    .claim-field .value { color:var(--text-main); font-size:0.9rem; }
+    .claim-proof { background:rgba(232,100,10,0.06); border:1px solid rgba(232,100,10,0.15); border-radius:10px; padding:14px; margin-bottom:16px; }
+    .claim-proof h4 { color:var(--orange); font-size:0.85rem; margin-bottom:6px; }
+    .claim-proof p { color:var(--text-muted); font-size:0.88rem; line-height:1.5; }
+    .claim-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn-approve { background:rgba(39,174,96,0.3); color:#2ecc71; border:1px solid rgba(46,204,113,0.4); padding:10px 22px; border-radius:20px; cursor:pointer; font-weight:700; transition:all 0.2s; }
+    .btn-approve:hover { background:rgba(39,174,96,0.5); }
+    .btn-reject { background:rgba(192,57,43,0.3); color:#e74c3c; border:1px solid rgba(231,76,60,0.4); padding:10px 22px; border-radius:20px; cursor:pointer; font-weight:700; transition:all 0.2s; }
+    .btn-reject:hover { background:rgba(192,57,43,0.5); }
+    .lf-nav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+    .lf-nav a { padding:8px 16px; border-radius:20px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); color:var(--text-main); font-size:0.85rem; transition:all 0.2s; }
+    .lf-nav a:hover { background:rgba(232,100,10,0.15); color:var(--orange); }
+    .lf-nav a.active { background:rgba(232,100,10,0.2); color:var(--orange); border-color:var(--orange); }
+    .filter-tabs { display:flex; gap:10px; margin-bottom:24px; }
+    .filter-tabs button { padding:9px 20px; border-radius:20px; border:1px solid rgba(232,100,10,0.25); background:transparent; color:var(--text-main); cursor:pointer; font-size:0.85rem; transition:all 0.2s; }
+    .filter-tabs button.active { background:var(--orange); color:white; border-color:var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh L&amp;F Admin</span></div>
+    <ul class="nav-links">
+      <li><a href="lost-found.html">L&amp;F Portal</a></li>
+      <li><a href="lf-admin.html">Manage Items</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="lost-found.html">🔍 L&amp;F Portal</a>
+    <a href="lf-admin.html">🛡️ Manage Items</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero">
+    <h1>🔒 Claims Verification Panel</h1>
+    <p>Review, approve, or reject item claim requests</p>
+  </div>
+
+  <section class="section">
+    <div class="lf-nav">
+      <a href="lost-found.html">← Public Portal</a>
+      <a href="lf-admin.html">🛡️ Manage Items</a>
+      <a href="lf-admin-claims.html" class="active">🔒 Claims</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:28px;">
+      <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:#f1c40f;">31</div>
+        <div style="color:#a08060;font-size:0.78rem;">Pending Review</div>
+      </div>
+      <div style="background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:#2ecc71;">24</div>
+        <div style="color:#a08060;font-size:0.78rem;">Approved</div>
+      </div>
+      <div style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:#e74c3c;">7</div>
+        <div style="color:#a08060;font-size:0.78rem;">Rejected</div>
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <button class="active" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');showClaims('pending')">Pending (31)</button>
+      <button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');showClaims('approved')">Approved (24)</button>
+      <button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');showClaims('rejected')">Rejected (7)</button>
+    </div>
+
+    <div id="claimsContainer">
+      <div class="claim-review-card" data-status="pending">
+        <div class="claim-head">
+          <div>
+            <div style="color:var(--text-muted);font-size:0.78rem;">Claim #C001 &bull; Item #LF002</div>
+            <h3>Samsung Galaxy S23</h3>
+          </div>
+          <span class="badge badge-pending">Pending</span>
+        </div>
+        <div class="claim-body">
+          <div class="claim-field"><div class="label">Claimant Name</div><div class="value">Priya Sharma</div></div>
+          <div class="claim-field"><div class="label">Phone</div><div class="value">+91 98XXX XXXXX</div></div>
+          <div class="claim-field"><div class="label">ID Proof</div><div class="value">Aadhaar (last 4: 7890)</div></div>
+          <div class="claim-field"><div class="label">Submitted</div><div class="value">Jul 22, 2027 • 3:15 PM</div></div>
+        </div>
+        <div class="claim-proof">
+          <h4>🔍 Proof of Ownership Provided:</h4>
+          <p>"The phone has a pink pop socket on the back. My wallpaper is a photo of my daughter in a red dress. The phone case has the initials 'PS' scratched on inside. I had 3 missed calls from 'Mom' when I lost it."</p>
+        </div>
+        <div class="claim-actions">
+          <button class="btn-approve" onclick="updateClaim(this,'approved')">&#10003; Approve Claim</button>
+          <button class="btn-reject" onclick="updateClaim(this,'rejected')">&#10007; Reject Claim</button>
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:10px 20px;font-size:0.85rem;">View Item</a>
+        </div>
+      </div>
+
+      <div class="claim-review-card" data-status="pending">
+        <div class="claim-head">
+          <div>
+            <div style="color:var(--text-muted);font-size:0.78rem;">Claim #C002 &bull; Item #LF006</div>
+            <h3>Black Leather Purse</h3>
+          </div>
+          <span class="badge badge-pending">Pending</span>
+        </div>
+        <div class="claim-body">
+          <div class="claim-field"><div class="label">Claimant Name</div><div class="value">Meena Devi</div></div>
+          <div class="claim-field"><div class="label">Phone</div><div class="value">+91 77XXX XXXXX</div></div>
+          <div class="claim-field"><div class="label">ID Proof</div><div class="value">Voter ID (last 4: 4521)</div></div>
+          <div class="claim-field"><div class="label">Submitted</div><div class="value">Jul 24, 2027 • 6:00 PM</div></div>
+        </div>
+        <div class="claim-proof">
+          <h4>🔍 Proof of Ownership Provided:</h4>
+          <p>"Inside the purse there is a folded bus ticket from Pune to Nashik dated July 20. There's also a small photo of Sai Baba temple that I carry always. The clasp on the purse is slightly bent."</p>
+        </div>
+        <div class="claim-actions">
+          <button class="btn-approve" onclick="updateClaim(this,'approved')">&#10003; Approve Claim</button>
+          <button class="btn-reject" onclick="updateClaim(this,'rejected')">&#10007; Reject Claim</button>
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:10px 20px;font-size:0.85rem;">View Item</a>
+        </div>
+      </div>
+
+      <div class="claim-review-card approved" data-status="approved">
+        <div class="claim-head">
+          <div>
+            <div style="color:var(--text-muted);font-size:0.78rem;">Claim #C003 &bull; Item #LF004</div>
+            <h3>Child (Boy, ~5 yrs)</h3>
+          </div>
+          <span class="badge badge-returned">✓ Approved & Reunited</span>
+        </div>
+        <div class="claim-body">
+          <div class="claim-field"><div class="label">Parent Name</div><div class="value">Dinesh Kumar</div></div>
+          <div class="claim-field"><div class="label">Reunited</div><div class="value">Jul 22, 2027 • 5:45 PM</div></div>
+        </div>
+        <p style="color:#2ecc71;font-size:0.88rem;">✅ Child successfully reunited with family. Volunteer Team #2 supervised handover with ID verification.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div style="text-align:center;padding-bottom:20px;">
+      <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+      <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+    function updateClaim(btn, action){
+      const card=btn.closest('.claim-review-card');
+      card.dataset.status=action;
+      if(action==='approved'){
+        card.classList.add('approved');
+        card.querySelector('.badge').textContent='✓ Approved';
+        card.querySelector('.badge').className='badge badge-returned';
+      } else {
+        card.classList.add('rejected');
+        card.querySelector('.badge').textContent='✕ Rejected';
+        card.querySelector('.badge').className='badge badge-lost';
+      }
+      card.querySelector('.claim-actions').innerHTML='<p style="color:#a08060;font-size:0.88rem;">Decision recorded. Notification sent to claimant.</p>';
+    }
+    function showClaims(status){
+      document.querySelectorAll('.claim-review-card').forEach(c=>{
+        c.style.display=(c.dataset.status===status)?'block':'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost Items – Kumbh Mela L&amp;F</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .filter-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px; align-items:center; }
+    .filter-row select { padding:9px 14px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.2); border-radius:8px; color:var(--text-main); font-size:0.85rem; }
+    .items-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+    .item-card { background:#FFFFFF; border:1px solid rgba(192,57,43,0.25); border-radius:14px; padding:20px; transition:all 0.3s; }
+    .item-card:hover { border-color:rgba(192,57,43,0.5); box-shadow:0 10px 30px rgba(192,57,43,0.15); }
+    .item-card .ic-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .item-card .ic-id { color:var(--text-muted); font-size:0.78rem; }
+    .item-card .ic-name { color:var(--text-main); font-weight:600; font-size:1rem; margin-bottom:4px; }
+    .item-card .ic-cat { color:var(--orange); font-size:0.8rem; margin-bottom:8px; }
+    .item-card .ic-desc { color:#a08060; font-size:0.85rem; line-height:1.5; margin-bottom:12px; }
+    .item-card .ic-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:#806040; border-top:1px solid rgba(232,100,10,0.08); padding-top:10px; }
+    .item-card .ic-actions { display:flex; gap:8px; margin-top:12px; }
+    .lf-nav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px; }
+    .lf-nav a { padding:8px 16px; border-radius:20px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); color:var(--text-main); font-size:0.85rem; transition:all 0.2s; }
+    .lf-nav a:hover { background:rgba(232,100,10,0.15); color:var(--orange); }
+    .lf-nav a.active { background:rgba(232,100,10,0.2); color:var(--orange); border-color:var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li><li><a href="lost-found.html">Lost &amp; Found</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🏠 Home</a><a href="lost-found.html">🔍 Lost &amp; Found</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero" style="background:linear-gradient(135deg,#FFF3E8,#FFE8D0,#FFF3E8);">
+    <h1 style="color:#e74c3c;">📋 Lost Items Registry</h1>
+    <p>Browse all reported lost items. Contact us if you recognize something.</p>
+  </div>
+
+  <section class="section">
+    <div class="lf-nav">
+      <a href="lost-found.html">← L&amp;F Home</a>
+      <a href="lf-view-lost.html" class="active">🚫 Lost Items</a>
+      <a href="lf-view-found.html">✅ Found Items</a>
+      <a href="lf-report-lost.html">➕ Report Lost</a>
+      <a href="lf-track.html">📱 Track Status</a>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="Search by name, category, location..." oninput="filterLost()">
+      <button onclick="filterLost()">Search</button>
+    </div>
+    <div class="filter-row">
+      <span style="color:var(--text-muted);font-size:0.9rem;">Filter:</span>
+      <select id="catFilter" onchange="filterLost()">
+        <option value="">All Categories</option>
+        <option>Bag / Luggage</option><option>Electronics</option>
+        <option>Wallet / Money</option><option>Jewellery</option>
+        <option>Documents</option><option>Clothing</option><option>Other</option>
+      </select>
+      <select id="locFilter" onchange="filterLost()">
+        <option value="">All Locations</option>
+        <option>Ram Kund</option><option>Tapovan</option>
+        <option>Lakshman Kund</option><option>Sita Gund</option>
+        <option>Kapileshwar Ghat</option>
+      </select>
+    </div>
+    <div class="items-grid" id="itemsGrid">
+      <div class="item-card" data-cat="Bag / Luggage" data-loc="Ram Kund">
+        <div class="ic-head"><span class="ic-id">#LF001</span><span class="badge badge-lost">Lost</span></div>
+        <div class="ic-name">👜 Black Backpack (Nike)</div>
+        <div class="ic-cat">Bag / Luggage</div>
+        <div class="ic-desc">Large black Nike backpack. Contains laptop, charger, yellow notebook. Zipper broken on left pocket.</div>
+        <div class="ic-meta"><span>📍 Ram Kund</span><span>Jul 21, 2027 • 9:30 AM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+      <div class="item-card" data-cat="Wallet / Money" data-loc="Lakshman Kund">
+        <div class="ic-head"><span class="ic-id">#LF003</span><span class="badge badge-lost">Lost</span></div>
+        <div class="ic-name">💳 Brown Leather Wallet</div>
+        <div class="ic-cat">Wallet / Money</div>
+        <div class="ic-desc">Brown leather wallet. Contains Aadhaar card, some cash (~₹1500), and a family photo. Small scratch on corner.</div>
+        <div class="ic-meta"><span>📍 Lakshman Kund</span><span>Jul 22, 2027 • 2:15 PM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+      <div class="item-card" data-cat="Jewellery" data-loc="Sita Gund">
+        <div class="ic-head"><span class="ic-id">#LF005</span><span class="badge badge-pending">Pending</span></div>
+        <div class="ic-name">💍 Gold Necklace</div>
+        <div class="ic-cat">Jewellery</div>
+        <div class="ic-desc">22K gold necklace with Om pendant. Belonged to elderly mother. Great sentimental value. Reward offered.</div>
+        <div class="ic-meta"><span>📍 Sita Gund</span><span>Jul 23, 2027 • 11:00 AM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+      <div class="item-card" data-cat="Electronics" data-loc="Tapovan">
+        <div class="ic-head"><span class="ic-id">#LF007</span><span class="badge badge-lost">Lost</span></div>
+        <div class="ic-name">📷 Canon Camera (EOS M50)</div>
+        <div class="ic-cat">Electronics</div>
+        <div class="ic-desc">Black Canon EOS M50 mirrorless camera. Silver sticker on bottom. Memory card with family photos inside.</div>
+        <div class="ic-meta"><span>📍 Tapovan</span><span>Jul 24, 2027 • 4:00 PM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+      <div class="item-card" data-cat="Documents" data-loc="Ram Kund">
+        <div class="ic-head"><span class="ic-id">#LF009</span><span class="badge badge-lost">Lost</span></div>
+        <div class="ic-name">💼 Document Folder</div>
+        <div class="ic-cat">Documents</div>
+        <div class="ic-desc">Blue plastic document folder containing passport, train tickets, and hotel booking papers. Name: Ramesh Gupta.</div>
+        <div class="ic-meta"><span>📍 Ram Kund</span><span>Jul 25, 2027 • 8:00 AM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+      <div class="item-card" data-cat="Bag / Luggage" data-loc="Kapileshwar Ghat">
+        <div class="ic-head"><span class="ic-id">#LF011</span><span class="badge badge-lost">Lost</span></div>
+        <div class="ic-name">🧳 Red Trolley Bag</div>
+        <div class="ic-cat">Bag / Luggage</div>
+        <div class="ic-desc">Red hard-shell trolley suitcase (medium size). Name tag: Sunita Sharma. Contains clothes and medicines.</div>
+        <div class="ic-meta"><span>📍 Kapileshwar Ghat</span><span>Jul 26, 2027 • 3:30 PM</span></div>
+        <div class="ic-actions">
+          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div style="text-align:center;padding-bottom:20px;">
+      <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+      <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+    function filterLost(){
+      const q=document.getElementById('searchBox').value.toLowerCase();
+      const cat=document.getElementById('catFilter').value;
+      const loc=document.getElementById('locFilter').value;
+      document.querySelectorAll('.item-card').forEach(c=>{
+        const text=c.textContent.toLowerCase();
+        const matchQ=!q||text.includes(q);
+        const matchCat=!cat||c.dataset.cat===cat;
+        const matchLoc=!loc||c.dataset.loc===loc;
+        c.style.display=(matchQ&&matchCat&&matchLoc)?'block':'none';
+      });
+    }
+  </script>
+</body>
+</html>

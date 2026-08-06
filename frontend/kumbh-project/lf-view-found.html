@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found Items – Kumbh Mela L&amp;F</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .items-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+    .item-card { background:#FFFFFF; border:1px solid rgba(39,174,96,0.25); border-radius:14px; padding:20px; transition:all 0.3s; }
+    .item-card:hover { border-color:rgba(39,174,96,0.5); box-shadow:0 10px 30px rgba(39,174,96,0.12); }
+    .item-card .ic-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .item-card .ic-id { color:var(--text-muted); font-size:0.78rem; }
+    .item-card .ic-name { color:var(--text-main); font-weight:600; font-size:1rem; margin-bottom:4px; }
+    .item-card .ic-cat { color:#2ecc71; font-size:0.8rem; margin-bottom:8px; }
+    .item-card .ic-desc { color:#a08060; font-size:0.85rem; line-height:1.5; margin-bottom:12px; }
+    .item-card .ic-meta { display:flex; justify-content:space-between; font-size:0.78rem; color:#806040; border-top:1px solid rgba(232,100,10,0.08); padding-top:10px; }
+    .item-card .ic-actions { display:flex; gap:8px; margin-top:12px; }
+    .lf-nav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px; }
+    .lf-nav a { padding:8px 16px; border-radius:20px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); color:var(--text-main); font-size:0.85rem; transition:all 0.2s; }
+    .lf-nav a:hover { background:rgba(232,100,10,0.15); color:var(--orange); }
+    .lf-nav a.active { background:rgba(232,100,10,0.2); color:var(--orange); border-color:var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li><li><a href="lost-found.html">Lost &amp; Found</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🏠 Home</a><a href="lost-found.html">🔍 Lost &amp; Found</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero" style="background:linear-gradient(135deg,#FFF3E8,#FFE8D0,#FFF3E8);">
+    <h1 style="color:#2ecc71;">✅ Found Items Registry</h1>
+    <p>Items found and deposited at Kumbh Mela Lost &amp; Found Centers</p>
+  </div>
+
+  <section class="section">
+    <div class="lf-nav">
+      <a href="lost-found.html">← L&amp;F Home</a>
+      <a href="lf-view-lost.html">🚫 Lost Items</a>
+      <a href="lf-view-found.html" class="active">✅ Found Items</a>
+      <a href="lf-claim-item.html">🔐 Claim Item</a>
+      <a href="lf-track.html">📱 Track Status</a>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="Search found items..." oninput="filterFound()">
+      <button onclick="filterFound()">Search</button>
+    </div>
+    <div class="items-grid" id="itemsGrid"></div>
+    
+  </section>
+
+  <footer class="footer">
+    <div style="text-align:center;padding-bottom:20px;">
+      <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+      <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('DOMContentLoaded', loadItems);
+
+function loadItems() {
+  fetch("http://localhost:8080/found-items")
+    .then(res => res.json())
+    .then(data => {
+      const grid = document.getElementById("itemsGrid");
+      grid.innerHTML = "";
+
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "item-card";
+
+        card.innerHTML = `
+          <div class="ic-head">
+            <span class="ic-id">#LF${item.id}</span>
+            <span class="badge badge-found">Found</span>
+          </div>
+
+          ${item.imageUrl ? `<img src="http://localhost:8080${item.imageUrl}" 
+            style="width:100%;border-radius:10px;margin-bottom:10px;">` : ""}
+
+          <div class="ic-name">📦 ${item.itemName}</div>
+          <div class="ic-cat">${item.category}</div>
+          <div class="ic-desc">${item.description}</div>
+
+          <div class="ic-meta">
+            <span>📍 ${item.locationFound}</span>
+            <span>${formatDate(item.datetimeFound)}</span>
+          </div>
+
+          <div class="ic-actions">
+            <a href="lf-item-details.html?id=${item.id}" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">Details</a>
+
+            ${item.category !== "Child / Person" ? 
+              `<a href="lf-claim-item.html?id=${item.id}" class="btn btn-gold" style="padding:7px 16px;font-size:0.82rem;">Claim</a>` 
+              : ""}
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    });
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString() + " • " + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function filterFound(){
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  document.querySelectorAll('.item-card').forEach(c=>{
+    c.style.display=c.textContent.toLowerCase().includes(q)?'block':'none';
+  });
+}
+  </script>
+</body>
+</html>

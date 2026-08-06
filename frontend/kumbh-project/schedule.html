@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule 2027 – Nashik Kumbh Mela</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .schedule-timeline { position:relative; max-width:900px; margin:0 auto; }
+    .schedule-timeline::before {
+      content:''; position:absolute; left:50%; top:0; bottom:0;
+      width:3px; transform:translateX(-50%);
+      background:linear-gradient(to bottom,var(--orange),var(--orange),var(--orange));
+    }
+    .sched-item { display:flex; margin-bottom:50px; position:relative; }
+    .sched-item:nth-child(odd) { flex-direction:row; }
+    .sched-item:nth-child(even) { flex-direction:row-reverse; }
+    .sched-content {
+      width:44%; padding:24px; border-radius:16px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,215,0,0.15);
+      transition:all 0.3s;
+    }
+    .sched-content:hover { background:rgba(255,107,0,0.08); box-shadow:0 12px 40px rgba(255,107,0,0.2); }
+    .sched-dot {
+      position:absolute; left:50%; top:20px; transform:translateX(-50%);
+      width:20px; height:20px; border-radius:50%;
+      background:var(--orange); border:4px solid var(--orange);
+      box-shadow:0 0 16px rgba(255,215,0,0.6); z-index:1;
+    }
+    .sched-dot.shahi { width:28px; height:28px; top:14px; background:var(--orange); }
+    .sched-date { color:var(--orange); font-size:0.82rem; font-weight:700; margin-bottom:6px; }
+    .sched-title { color:var(--orange); font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+    .sched-desc { color:var(--text-muted); font-size:0.88rem; line-height:1.6; }
+    .sched-badge {
+      display:inline-block; margin-top:10px; padding:4px 14px; border-radius:14px; font-size:0.78rem; font-weight:700;
+    }
+    .badge-shahi { background:rgba(255,107,0,0.25); color:var(--orange); border:1px solid var(--orange); }
+    .badge-regular { background:rgba(255,215,0,0.15); color:var(--orange); border:1px solid rgba(255,215,0,0.3); }
+    @media(max-width:768px){
+      .schedule-timeline::before{ left:20px; }
+      .sched-item,.sched-item:nth-child(even){ flex-direction:column; padding-left:50px; }
+      .sched-content{ width:100%; }
+      .sched-dot,.sched-dot.shahi{ left:11px; transform:none; }
+    }
+    .month-header {
+      text-align:center; margin:40px 0 20px;
+    }
+    .month-header h3 {
+      display:inline-block; color:var(--orange);
+      background:linear-gradient(135deg,#FFF3E8,#FFE0C8);
+      border:1px solid rgba(255,215,0,0.2);
+      padding:8px 28px; border-radius:30px; font-size:1.1rem;
+    }
+    .countdown-bar {
+      background:linear-gradient(135deg,#FFE8D0,#FFF0E0);
+      border:1px solid rgba(232,100,10,0.2);
+      border-radius:16px; padding:30px; text-align:center; margin-bottom:50px;
+    }
+    .countdown-bar h3 { color:var(--orange); margin-bottom:16px; }
+    .countdown-nums { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; }
+    .countdown-num { text-align:center; }
+    .countdown-num .num {
+      font-size:3rem; font-weight:800; color:var(--orange);
+      text-shadow:0 0 20px rgba(232,100,10,0.3);
+    }
+    .countdown-num .lbl { color:var(--text-muted); font-size:0.85rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="ghats.html">Ghat Maps</a></li>
+      <li><a href="facilities.html">Facilities</a></li>
+      <li><a href="schedule.html" class="active">Schedule</a></li>
+      <li><a href="lost-found.html">Lost &amp; Found</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🏠 Home</a><a href="about.html">📿 About</a><a href="ghats.html">🌊 Ghat Maps</a>
+    <a href="facilities.html">🏥 Facilities</a><a href="schedule.html">📅 Schedule</a>
+    <a href="lost-found.html">🔍 Lost &amp; Found</a><a href="contact.html">📞 Contact</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero">
+    <span class="om-decor">📅</span>
+    <h1>Shahi Snan Schedule 2027</h1>
+    <p>Auspicious bathing dates &amp; complete event calendar for Nashik Kumbh Mela</p>
+  </div>
+
+  <section class="section">
+    <div class="countdown-bar">
+      <h3>⏳ Countdown to Nashik Kumbh 2027</h3>
+      <div class="countdown-nums">
+        <div class="countdown-num"><span class="num" id="days">--</span><div class="lbl">Days</div></div>
+        <div class="countdown-num"><span class="num" id="hours">--</span><div class="lbl">Hours</div></div>
+        <div class="countdown-num"><span class="num" id="mins">--</span><div class="lbl">Minutes</div></div>
+        <div class="countdown-num"><span class="num" id="secs">--</span><div class="lbl">Seconds</div></div>
+      </div>
+      <p style="color:var(--text-muted);margin-top:16px;">Until the first Shahi Snan — July 21, 2027</p>
+    </div>
+
+    <div class="section-title"><h2>Complete Event Timeline</h2><div class="divider"></div></div>
+
+    <div class="schedule-timeline">
+
+      <div class="month-header"><h3>July 2027 – Opening</h3></div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">July 10, 2027 (Guru Purnima)</div>
+          <div class="sched-title">🕉 Kumbh Mela Inauguration</div>
+          <div class="sched-desc">Official opening ceremony with lighting of the sacred lamp, processions of all 13 Akharas, and puja at Ram Kund by the Chief Minister of Maharashtra.</div>
+          <span class="sched-badge badge-regular">Opening Ceremony</span>
+        </div>
+        <div class="sched-dot"></div>
+      </div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">July 21, 2027 (Shravan Shukla Pratipada)</div>
+          <div class="sched-title">🔥 FIRST SHAHI SNAN</div>
+          <div class="sched-desc">The first and most auspicious Royal Bath. Naga sadhus lead the procession in magnificent formation. Millions bathe at Ram Kund from 4 AM. VIP areas accessible by pass only.</div>
+          <span class="sched-badge badge-shahi">🔥 Shahi Snan #1</span>
+        </div>
+        <div class="sched-dot shahi"></div>
+      </div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">July 24, 2027 (Nag Panchami)</div>
+          <div class="sched-title">🐍 Nag Panchami Snan</div>
+          <div class="sched-desc">Special bathing day for Nag Panchami. Serpent deity worship at all ghats. Processions of saints with live snake rituals at the Kapileshwar temple.</div>
+          <span class="sched-badge badge-regular">Special Snan</span>
+        </div>
+        <div class="sched-dot"></div>
+      </div>
+
+      <div class="month-header"><h3>August 2027 – Peak Days</h3></div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">August 5, 2027 (Shravan Purnima / Raksha Bandhan)</div>
+          <div class="sched-title">🔥 SECOND SHAHI SNAN</div>
+          <div class="sched-desc">The second grand Royal Bath coincides with Raksha Bandhan. Vaishnavas and Shaivas both participate. This is expected to draw the largest single-day crowd of 5+ million pilgrims.</div>
+          <span class="sched-badge badge-shahi">🔥 Shahi Snan #2</span>
+        </div>
+        <div class="sched-dot shahi"></div>
+      </div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">August 9–12, 2027</div>
+          <div class="sched-title">📖 Spiritual Discourses &amp; Satsang</div>
+          <div class="sched-desc">4-day back-to-back spiritual discourses by eminent saints. Bhajans, kirtans, and Ram Katha by renowned Kathakars at the Central Stage near Tapovan.</div>
+          <span class="sched-badge badge-regular">Spiritual Programs</span>
+        </div>
+        <div class="sched-dot"></div>
+      </div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">August 19, 2027 (Bhadrapad Amavasya)</div>
+          <div class="sched-title">🔥 THIRD SHAHI SNAN</div>
+          <div class="sched-desc">The final grand Royal Bath of the 2027 Kumbh. All Akharas participate in a unified procession. Special midnight snan allowed this day only. Massive fireworks display at conclusion.</div>
+          <span class="sched-badge badge-shahi">🔥 Shahi Snan #3</span>
+        </div>
+        <div class="sched-dot shahi"></div>
+      </div>
+
+      <div class="month-header"><h3>September 2027 – Closing</h3></div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">September 1– 5, 2027</div>
+          <div class="sched-title">🌿 Valedictory Processions</div>
+          <div class="sched-desc">Final processions of all Akharas back to their home bases. Cultural programs, folk performances, and the last ritual Godavari aarti of the Kumbh 2027.</div>
+          <span class="sched-badge badge-regular">Closing Events</span>
+        </div>
+        <div class="sched-dot"></div>
+      </div>
+
+      <div class="sched-item">
+        <div class="sched-content">
+          <div class="sched-date">September 10, 2027 (Anant Chaturdashi)</div>
+          <div class="sched-title">🕉 Kumbh Mela Closing Ceremony</div>
+          <div class="sched-desc">Grand finale with symbolic immersion ceremony, final mass prayer at Ram Kund, distribution of Prasad, and official closing address. Until Nashik Kumbh 2039.</div>
+          <span class="sched-badge badge-regular">Closing Ceremony</span>
+        </div>
+        <div class="sched-dot"></div>
+      </div>
+
+    </div>
+
+    <div style="background:rgba(232,100,10,0.05);border:1px solid rgba(232,100,10,0.15);border-radius:16px;padding:24px;margin-top:40px;">
+      <h3 style="color:var(--orange);margin-bottom:12px;">⚠️ Important Notes for Shahi Snan Days</h3>
+      <ul style="list-style:none;">
+        <li style="color:var(--text-muted);padding:8px 0;border-bottom:1px solid rgba(255,215,0,0.08);">&#x2022; Arrive at the ghat area by 3 AM on Shahi Snan days for best access</li>
+        <li style="color:var(--text-muted);padding:8px 0;border-bottom:1px solid rgba(255,215,0,0.08);">&#x2022; Large bags and vehicles are not permitted within 2km of ghats on Snan days</li>
+        <li style="color:var(--text-muted);padding:8px 0;border-bottom:1px solid rgba(255,215,0,0.08);">&#x2022; Keep children close and note emergency contact numbers (Police: 100)</li>
+        <li style="color:var(--text-muted);padding:8px 0;border-bottom:1px solid rgba(255,215,0,0.08);">&#x2022; Carry sufficient water, medicines, and identification documents</li>
+        <li style="color:var(--text-muted);padding:8px 0;">&#x2022; Follow all crowd management instructions from police and volunteers</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col"><h4>🕉 Kumbh Mela Nashik</h4><p>Sacred Simhastha Kumbh on the Godavari.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><a href="ghats.html">Ghat Maps</a><a href="facilities.html">Facilities</a><a href="emergency.html">Emergency</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="lost-found.html">Lost &amp; Found</a><a href="contact.html">Contact Us</a></div>
+      <div class="footer-col"><h4>Emergency</h4><p>Police: 100 | Ambulance: 108</p></div>
+    </div>
+    <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+    <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+    function updateCountdown(){
+      const target=new Date('2027-07-21T04:00:00');
+      const now=new Date();
+      const diff=target-now;
+      if(diff<0){document.querySelector('.countdown-bar').innerHTML='<h3 style="color:var(--orange)">🔥 Kumbh Mela is Live!</h3>';return;}
+      document.getElementById('days').textContent=Math.floor(diff/86400000);
+      document.getElementById('hours').textContent=Math.floor((diff%86400000)/3600000);
+      document.getElementById('mins').textContent=Math.floor((diff%3600000)/60000);
+      document.getElementById('secs').textContent=Math.floor((diff%60000)/1000);
+    }
+    updateCountdown(); setInterval(updateCountdown,1000);
+  </script>
+</body>
+</html>

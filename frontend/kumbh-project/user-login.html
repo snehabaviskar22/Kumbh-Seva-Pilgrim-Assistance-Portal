@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login & Register</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: linear-gradient(to right,#fff3e6,#ffe0cc);
+}
+
+/* MAIN */
+.container{
+  width:800px;
+  height:450px;
+  display:flex;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  background:#fff;
+}
+
+/* LEFT SIDE (FORMS) */
+.forms{
+  width:50%;
+  overflow:hidden;
+}
+
+.slider{
+  width:200%;
+  display:flex;
+  transition:0.6s ease;
+}
+
+/* EACH FORM */
+.form-box{
+  width:50%;
+  height:450px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+form{
+  width:80%;
+  display:flex;
+  flex-direction:column;
+}
+
+h1{
+  text-align:center;
+  color:#ff6600;
+  margin-bottom:15px;
+}
+
+input{
+  margin:8px 0;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+button{
+  margin-top:10px;
+  padding:10px;
+  background:#ff6600;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+/* RIGHT PANEL */
+.side{
+  width:50%;
+  background:#ff6600;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+.side h2{
+  margin-bottom:10px;
+}
+
+.side button{
+  padding:8px 15px;
+  background:transparent;
+  border:1px solid white;
+  color:white;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- FORMS -->
+  <div class="forms">
+    <div class="slider" id="slider">
+
+      <!-- LOGIN -->
+      <div class="form-box">
+        <form>
+          <h1>Login</h1>
+          <input id="loginEmail" type="email" placeholder="Email">
+          <input id="loginPassword" type="password" placeholder="Password">
+          <button onclick="login()" type="button">Login</button>
+        </form>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="form-box">
+        <form>
+          <h1>Register</h1>
+          <input id="name" type="text" placeholder="Name">
+          <input id="email" type="email" placeholder="Email">
+          <input id="password" type="password" placeholder="Password">
+          <button onclick="register()" type="button">Register</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDE -->
+  <div class="side">
+    <h2 id="text">New here?</h2>
+    <button onclick="toggle()">Register</button>
+  </div>
+
+</div>
+
+<script>
+
+let isRegister = false;
+const slider = document.getElementById("slider");
+const text = document.getElementById("text");
+
+function toggle(){
+  if(!isRegister){
+    slider.style.transform = "translateX(-50%)";
+    text.innerText = "Already have an account?";
+    document.querySelector(".side button").innerText = "Login";
+  } else {
+    slider.style.transform = "translateX(0)";
+    text.innerText = "New here?";
+    document.querySelector(".side button").innerText = "Register";
+  }
+  isRegister = !isRegister;
+}
+
+/* ================= REGISTER ================= */
+function register() {
+
+    const user = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    fetch("http://localhost:8080/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user)
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        toggle(); // switch to login
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Registration failed");
+    });
+}
+
+/* ================= LOGIN ================= */
+function login() {
+
+    const user = {
+        email: document.getElementById("loginEmail").value,
+        password: document.getElementById("loginPassword").value
+    };
+
+    fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+        credentials: "include"
+    })
+    .then(res => res.text())
+    .then(data => {
+        if(data === "Login Success"){  
+          localStorage.setItem("loggedIn", "true");// ✅ FIXED
+            window.location.href = "lost-found.html";
+        } else {
+            alert(data);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Login failed");
+    });
+}
+
+</script>
+
+</body>
+</html>

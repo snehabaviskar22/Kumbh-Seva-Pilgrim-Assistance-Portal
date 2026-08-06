@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin / Volunteer Panel – Kumbh Mela L&amp;F</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .admin-header { background:linear-gradient(135deg,#FFF3E8,#FFF3E8); border:1px solid rgba(232,100,10,0.15); border-radius:16px; padding:24px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+    .admin-header h2 { color:var(--orange); }
+    .admin-tabs { display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap; }
+    .admin-tab { padding:10px 22px; border-radius:20px; border:1px solid rgba(232,100,10,0.25); background:transparent; color:var(--text-main); cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+    .admin-tab.active { background:var(--orange); color:white; border-color:var(--orange); }
+    .admin-pane { display:none; }
+    .admin-pane.active { display:block; }
+    .manage-row { display:grid; grid-template-columns:60px 1fr 100px 120px 120px 140px; gap:12px; align-items:center; padding:14px 16px; border-bottom:1px solid rgba(232,100,10,0.07); font-size:0.88rem; }
+    .manage-row.head { background:rgba(232,100,10,0.15); color:var(--orange); font-weight:600; font-size:0.82rem; border-radius:8px 8px 0 0; }
+    .manage-row:hover:not(.head) { background:#FFFFFF; }
+    .status-select { background:#FFFFFF; border:1px solid rgba(232,100,10,0.2); border-radius:8px; color:var(--text-main); padding:5px 10px; font-size:0.82rem; cursor:pointer; }
+    .action-btns { display:flex; gap:6px; }
+    .action-btns button { padding:5px 10px; border-radius:6px; border:none; cursor:pointer; font-size:0.78rem; font-weight:600; }
+    .btn-save { background:rgba(39,174,96,0.3); color:#2ecc71; }
+    .btn-del { background:rgba(192,57,43,0.3); color:#e74c3c; }
+    @media(max-width:768px){ .manage-row{ grid-template-columns:1fr 1fr; gap:8px; } .manage-row .col3,.manage-row .col4{ display:none; } }
+    .stats-mini { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-bottom:24px; }
+    .stat-mini { background:#FFFFFF; border:1px solid rgba(232,100,10,0.1); border-radius:10px; padding:14px; text-align:center; }
+    .stat-mini .n { font-size:1.8rem; font-weight:800; color:var(--orange); }
+    .stat-mini .l { color:#a08060; font-size:0.78rem; }
+    .lf-nav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+    .lf-nav a { padding:8px 16px; border-radius:20px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); color:var(--text-main); font-size:0.85rem; transition:all 0.2s; }
+    .lf-nav a:hover { background:rgba(232,100,10,0.15); color:var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh L&amp;F Admin</span></div>
+    <ul class="nav-links">
+      <li><a href="lost-found.html">L&amp;F Portal</a></li>
+      <li><a href="lf-admin-claims.html">Claims Review</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="lost-found.html">🔍 L&amp;F Portal</a>
+    <a href="lf-admin-claims.html">🔒 Claims Review</a>
+    <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero">
+    <h1>🛡️ Admin / Volunteer Panel</h1>
+    <p>Manage Lost &amp; Found items, update statuses, and coordinate volunteers</p>
+  </div>
+
+  <section class="section">
+    <div class="lf-nav">
+      <a href="lost-found.html">← Public Portal</a>
+      <a href="lf-admin-claims.html">🔒 Claims Review</a>
+    </div>
+    <div class="admin-header">
+      <div>
+        <h2>🛡️ Volunteer Management Panel</h2>
+        <p style="color:#a08060;font-size:0.9rem;margin-top:4px;">Welcome, Volunteer Admin &bull; Last login: Today 8:30 AM</p>
+      </div>
+      <div class="stats-mini" style="min-width:400px;">
+        <div class="stat-mini"><div class="n">142</div><div class="l">Lost</div></div>
+        <div class="stat-mini"><div class="n">98</div><div class="l">Found</div></div>
+        <div class="stat-mini"><div class="n">67</div><div class="l">Returned</div></div>
+        <div class="stat-mini"><div class="n">31</div><div class="l">Pending</div></div>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showPane('all-items',this)">All Items</button>
+      <button class="admin-tab" onclick="showPane('lost-items',this)">Lost</button>
+      <button class="admin-tab" onclick="showPane('found-items',this)">Found</button>
+      <button class="admin-tab" onclick="showPane('returned-items',this)">Returned</button>
+    </div>
+
+    <div class="search-bar" style="margin-bottom:16px;">
+      <input type="text" placeholder="Search items by ID, name, location...">
+      <button>Search</button>
+    </div>
+
+    <div id="all-items" class="admin-pane active">
+      <div style="border:1px solid rgba(232,100,10,0.1);border-radius:12px;overflow:hidden;">
+        <div class="manage-row head">
+          <span>ID</span><span>Item</span>
+          <span class="col3">Category</span>
+          <span class="col4">Location</span>
+          <span>Status</span><span>Actions</span>
+        </div>
+        <div class="manage-row">
+          <span style="color:var(--text-muted)">#LF001</span>
+          <span style="color:var(--text-main)">👜 Black Backpack</span>
+          <span class="col3" style="color:#a08060">Bag</span>
+          <span class="col4" style="color:#a08060">Ram Kund</span>
+          <select class="status-select"><option>Lost</option><option>Found</option><option>Returned</option><option>Closed</option></select>
+          <div class="action-btns"><button class="btn-save">Save</button><button class="btn-del">Delete</button></div>
+        </div>
+        <div class="manage-row">
+          <span style="color:var(--text-muted)">#LF002</span>
+          <span style="color:var(--text-main)">📱 Samsung S23</span>
+          <span class="col3" style="color:#a08060">Electronics</span>
+          <span class="col4" style="color:#a08060">Tapovan</span>
+          <select class="status-select"><option>Lost</option><option selected>Found</option><option>Returned</option><option>Closed</option></select>
+          <div class="action-btns"><button class="btn-save">Save</button><button class="btn-del">Delete</button></div>
+        </div>
+        <div class="manage-row">
+          <span style="color:var(--text-muted)">#LF003</span>
+          <span style="color:var(--text-main)">💳 Brown Wallet</span>
+          <span class="col3" style="color:#a08060">Wallet</span>
+          <span class="col4" style="color:#a08060">Lakshman Kund</span>
+          <select class="status-select"><option selected>Lost</option><option>Found</option><option>Returned</option><option>Closed</option></select>
+          <div class="action-btns"><button class="btn-save">Save</button><button class="btn-del">Delete</button></div>
+        </div>
+        <div class="manage-row">
+          <span style="color:var(--text-muted)">#LF004</span>
+          <span style="color:var(--text-main)">👶 Child (Boy)</span>
+          <span class="col3" style="color:#a08060">Person</span>
+          <span class="col4" style="color:#a08060">Ram Kund Gate</span>
+          <select class="status-select"><option>Lost</option><option>Found</option><option selected>Returned</option><option>Closed</option></select>
+          <div class="action-btns"><button class="btn-save">Save</button><button class="btn-del">Delete</button></div>
+        </div>
+        <div class="manage-row">
+          <span style="color:var(--text-muted)">#LF005</span>
+          <span style="color:var(--text-main)">💍 Gold Necklace</span>
+          <span class="col3" style="color:#a08060">Jewellery</span>
+          <span class="col4" style="color:#a08060">Sita Gund</span>
+          <select class="status-select"><option selected>Lost</option><option>Found</option><option>Returned</option><option>Closed</option></select>
+          <div class="action-btns"><button class="btn-save">Save</button><button class="btn-del">Delete</button></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button class="btn btn-gold">Export CSV</button>
+        <a href="lf-report-lost.html" class="btn btn-primary">➕ Add New Item</a>
+      </div>
+    </div>
+    <div id="lost-items" class="admin-pane"><p style="color:#a08060;padding:20px;">Filter: Showing Lost items only... (same as above with filter applied)</p></div>
+    <div id="found-items" class="admin-pane"><p style="color:#a08060;padding:20px;">Filter: Showing Found items only...</p></div>
+    <div id="returned-items" class="admin-pane"><p style="color:#a08060;padding:20px;">Filter: Showing Returned items only...</p></div>
+  </section>
+
+  <footer class="footer">
+    <div style="text-align:center;padding-bottom:20px;">
+      <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+      <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+    function showPane(id,btn){
+      document.querySelectorAll('.admin-pane').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+    document.querySelectorAll('.btn-save').forEach(b=>b.addEventListener('click',function(){
+      const old=this.textContent;
+      this.textContent='✓ Saved'; this.style.background='rgba(39,174,96,0.5)';
+      setTimeout(()=>{this.textContent=old;this.style.background='';},1500);
+    }));
+  </script>
+</body>
+</html>

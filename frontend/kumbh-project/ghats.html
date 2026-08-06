@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghat Maps – Nashik Kumbh Mela 2027</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Leaflet.js for interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    /* GHAT CARDS */
+    .ghats-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:26px; margin-top:20px;
+    }
+    .ghat-card {
+      background: #FFFFFF;
+      border:1px solid rgba(232,100,10,0.2);
+      border-radius:18px; overflow:hidden;
+      cursor:default;
+      transition:box-shadow 0.3s, transform 0.3s;
+    }
+    .ghat-card:hover {
+      box-shadow:0 20px 60px rgba(232,100,10,0.25);
+      transform: translateY(-4px);
+    }
+    .ghat-img {
+      height:200px; position:relative; overflow:hidden;
+    }
+    .ghat-img img {
+      width:100%; height:100%; object-fit:cover; display:block;
+      transition: transform 0.5s;
+    }
+    .ghat-card:hover .ghat-img img { transform: scale(1.06); }
+    .ghat-img .ghat-num {
+      position:absolute; top:14px; right:14px;
+      background:rgba(28,15,8,0.8); color:var(--orange);
+      padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;
+      border:1px solid rgba(232,100,10,0.4);
+    }
+    .ghat-badge {
+      position:absolute; bottom:14px; left:14px;
+      background:rgba(232,100,10,0.85); color:#fff;
+      padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:600;
+    }
+    .ghat-body { padding:22px; }
+    .ghat-body h3 { color:var(--orange); font-size:1.2rem; margin-bottom:6px; }
+    .ghat-body .location { color:var(--orange-light); font-size:0.83rem; margin-bottom:10px; font-weight:500; }
+    .ghat-body p { color:#C0A080; font-size:0.9rem; line-height:1.7; }
+    .ghat-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .ghat-tag {
+      background:rgba(232,100,10,0.1); color:var(--orange);
+      padding:3px 10px; border-radius:14px; font-size:0.76rem;
+      border:1px solid rgba(232,100,10,0.2);
+    }
+    .ghat-footer {
+      border-top:1px solid rgba(232,100,10,0.1);
+      padding:13px 22px; display:flex; justify-content:space-between; align-items:center;
+    }
+    .ghat-footer .dist { color:#8A6040; font-size:0.82rem; }
+    .ghat-footer a {
+      color:var(--orange-light); font-size:0.83rem; font-weight:600;
+      display:flex; align-items:center; gap:4px;
+    }
+    .ghat-footer a:hover { color:var(--orange); }
+
+    /* MAP SECTION */
+    .map-section {
+      margin-top: 60px;
+      border-radius: 20px; overflow: hidden;
+      border: 2px solid rgba(232,100,10,0.2);
+    }
+    .map-header {
+      background: linear-gradient(135deg, #FFF3E8, #FFE8D0);
+      padding: 24px 30px;
+      border-bottom: 1px solid rgba(232,100,10,0.2);
+    }
+    .map-header h3 { color: var(--orange); font-size: 1.4rem; margin-bottom: 6px; }
+    .map-header p { color: var(--orange); font-size: 0.9rem; }
+    #ghats-map {
+      height: 480px; width: 100%;
+    }
+    .map-legend {
+      background: #FFF8F3;
+      padding: 16px 30px;
+      display: flex; flex-wrap: wrap; gap: 16px;
+      border-top: 1px solid rgba(232,100,10,0.15);
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; color: var(--orange);
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    /* POPUP OVERRIDE */
+    .leaflet-popup-content-wrapper {
+      background: #FFF0E0;
+      border: 1px solid rgba(232,100,10,0.4);
+      border-radius: 12px;
+      color: #EDE0C4;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .leaflet-popup-tip { background: #FFF0E0; }
+    .leaflet-popup-content h4 { color: var(--orange-dark); font-size: 1rem; margin-bottom: 6px; }
+    .leaflet-popup-content p { font-size: 0.83rem; color: var(--text-muted); margin: 3px 0; }
+    .leaflet-popup-content a {
+      display: inline-block; margin-top: 8px;
+      background: #B84C1A; color: white;
+      padding: 5px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 600;
+    }
+    .leaflet-popup-close-button { color: var(--orange) !important; }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="ghats.html" class="active">Ghat Maps</a></li>
+      <li><a href="facilities.html">Facilities</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="lost-found.html">Lost &amp; Found</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🏠 Home</a><a href="about.html">🐿 About</a>
+    <a href="ghats.html">🌊 Ghat Maps</a><a href="facilities.html">🏥 Facilities</a>
+    <a href="schedule.html">📅 Schedule</a><a href="lost-found.html">🔍 Lost &amp; Found</a>
+    <a href="contact.html">📞 Contact</a><a href="emergency.html" style="color:#C0392B;">🚨 Emergency</a>
+  </div>
+
+  <div class="page-hero">
+    <span class="om-decor">🌊</span>
+    <h1>Sacred Ghats of Nashik</h1>
+    <p>The holy bathing ghats on the Godavari — interactive map with real locations</p>
+  </div>
+
+  <section class="section">
+    <div class="section-title">
+      <h2>The 6 Sacred Ghats</h2>
+      <div class="divider"></div>
+      <p>Click any ghat card to locate it on the interactive map below</p>
+    </div>
+
+    <div class="ghats-grid">
+
+      <!-- RAM KUND -->
+      <div class="ghat-card" onclick="focusGhat(0)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/ramkundghat.jpg"
+     onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Panchavati_Nashik_Ram_Kund.jpg/640px-Panchavati_Nashik_Ram_Kund.jpg'; this.onerror=null;"
+     alt="Ram Kund Ghat">
+          <span class="ghat-num">Ghat 1</span>
+          <span class="ghat-badge">Primary Snan</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Ram Kund</h3>
+          <div class="location">📍 Panchavati, Nashik</div>
+          <p>The most sacred ghat where Lord Rama bathed during exile. Primary site for all Shahi Snan processions. Water here is believed to never decompose.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Primary Snan</span>
+            <span class="ghat-tag">Lord Rama</span>
+            <span class="ghat-tag">Shahi Snan</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 City Centre &bull; 20.0033°N</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0033,73.7907" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+      <!-- LAKSHMAN KUND -->
+      <div class="ghat-card" onclick="focusGhat(1)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/lakshmankund.png"
+               onerror="this.src='/assets/generated/hero-kumbh.dim_1920x1080.jpg'; this.onerror=null;"
+               alt="Lakshman Kund">
+          <span class="ghat-num">Ghat 2</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Lakshman Kund</h3>
+          <div class="location">📍 Near Ram Kund, Panchavati</div>
+          <p>Adjacent to Ram Kund, dedicated to Lord Lakshmana. Known for pristine clarity year-round. A peaceful spot for pilgrims after the main Ram Kund bath.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Lord Lakshmana</span>
+            <span class="ghat-tag">Ramayana</span>
+            <span class="ghat-tag">Sacred Bath</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 50m from Ram Kund</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0030,73.7910" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+      <!-- TAPOVAN -->
+      <div class="ghat-card" onclick="focusGhat(2)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/tapovan1.jpg"
+               onerror="this.style.background='linear-gradient(135deg,#F0FFF4,#DCFCE7)'; this.onerror=null;"
+               alt="Tapovan Ghat">
+          <span class="ghat-num">Ghat 3</span>
+          <span class="ghat-badge">Meditation Zone</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Tapovan</h3>
+          <div class="location">📍 Tapovan Road, Nashik</div>
+          <p>Serene forest-hermitage where sages Agastya and Valmiki meditated. Preferred by sadhus and yoga practitioners. Calm and away from main crowds.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Meditation</span>
+            <span class="ghat-tag">Hermitage</span>
+            <span class="ghat-tag">Peaceful</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 2km from city</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0082,73.7880" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+      <!-- SITA GUND -->
+      <div class="ghat-card" onclick="focusGhat(3)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/sitagufa.webp"
+               onerror="this.style.background='linear-gradient(135deg,#FEF3FF,#FAE8FF)'; this.onerror=null;"
+               alt="Sita Gund">
+          <span class="ghat-num">Ghat 4</span>
+          <span class="ghat-badge">Women Pilgrims</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Sita Gufa</h3>
+          <div class="location">📍 Panchavati, Nashik</div>
+          <p>Dedicated to Goddess Sita, where she performed her daily rituals. Specially venerated by women pilgrims, with the Sita Temple overlooking the Godavari.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Goddess Sita</span>
+            <span class="ghat-tag">Women Pilgrims</span>
+            <span class="ghat-tag">Temple</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 Near Ram Kund</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0035,73.7905" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+      <!-- AHILYADEVI GHAT -->
+      <div class="ghat-card" onclick="focusGhat(4)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/ahilyaghat.webp"
+               onerror="this.style.background='linear-gradient(135deg,#FFFBEB,#FEF3C7)'; this.onerror=null;"
+               alt="Ahilyadevi Ghat">
+          <span class="ghat-num">Ghat 5</span>
+          <span class="ghat-badge">Maratha Heritage</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Ramkund Ahilyadevi Ghat</h3>
+          <div class="location">📍 Panchavati, Nashik</div>
+          <p>Built by Maratha Queen Ahilyabai Holkar in the 18th century. Beautiful architecture hosts major Akhara processions during Shahi Snan ceremonies.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Ahilyabai Holkar</span>
+            <span class="ghat-tag">Maratha Heritage</span>
+            <span class="ghat-tag">Akhara</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 Attached to Ram Kund</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0031,73.7908" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+      <!-- KAPILESHWAR -->
+      <div class="ghat-card" onclick="focusGhat(5)" style="cursor:pointer">
+        <div class="ghat-img">
+          <img src="images/kapaleshwar.jpg"
+               onerror="this.style.background='linear-gradient(135deg,#001a0a,#004020)'; this.onerror=null;"
+               alt="Kapileshwar Ghat">
+          <span class="ghat-num">Ghat 6</span>
+          <span class="ghat-badge">Shiva Devotees</span>
+        </div>
+        <div class="ghat-body">
+          <h3>Kapaleshwar Ghat</h3>
+          <div class="location">📍 Old Nashik, Nashik</div>
+          <p>Named after sage Kapila, this ghat houses the ancient Kapaleshwar Mahadev temple. Major site for Shaiva devotees and Mahashivratri celebrations during Kumbh.</p>
+          <div class="ghat-tags">
+            <span class="ghat-tag">Sage Kapaleshwar</span>
+            <span class="ghat-tag">Shiva Temple</span>
+            <span class="ghat-tag">Shaiva Pilgrims</span>
+          </div>
+        </div>
+        <div class="ghat-footer">
+          <span class="dist">📍 1.5km from Ram Kund</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=20.0045,73.7925" target="_blank">Directions →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INTERACTIVE MAP -->
+    <div class="map-section">
+      <div class="map-header">
+        <h3>🗺️ Interactive Ghat Map – Nashik</h3>
+        <p>Click any marker on the map to see ghat details &bull; Click a card above to focus on the map</p>
+      </div>
+      <div id="ghats-map"></div>
+      <div class="map-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#B84C1A;"></span> Primary Snan Ghat</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#C8960C;"></span> Secondary Ghat</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#5A8A3A;"></span> Hermitage / Meditation</div>
+        <div class="legend-item">📍 Tap marker for details &bull; Scroll / pinch to zoom</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col"><h4>🕉 Kumbh Mela Nashik</h4><p>Sacred Simhastha Kumbh on the Godavari.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><a href="facilities.html">Facilities &amp; Stay</a><a href="schedule.html">Schedule 2027</a><a href="lost-found.html">Lost &amp; Found</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="emergency.html">Emergency</a><a href="contact.html">Contact Us</a></div>
+      <div class="footer-col"><h4>Emergency</h4><p>Police: 100 | Ambulance: 108</p></div>
+    </div>
+    <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+    <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+  </footer>
+
+  <script>
+    // NAVBAR
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+
+    // GHAT DATA
+    const ghats = [
+      {
+        name: 'Ram Kund',
+        lat: 20.0033, lng: 73.7907,
+        color: '#B84C1A',
+        desc: 'Primary Shahi Snan ghat. Lord Rama bathed here during exile.',
+        timings: 'Open 24/7 during Kumbh',
+        distance: 'City Centre (Panchavati)',
+        badge: 'Primary Snan'
+      },
+      {
+        name: 'Lakshman Kund',
+        lat: 20.0030, lng: 73.7910,
+        color: '#C8960C',
+        desc: 'Adjacent to Ram Kund, dedicated to Lord Lakshmana.',
+        timings: 'Open 24/7 during Kumbh',
+        distance: '50m from Ram Kund',
+        badge: 'Sacred Bath'
+      },
+      {
+        name: 'Tapovan',
+        lat: 20.0082, lng: 73.7880,
+        color: '#5A8A3A',
+        desc: 'Ancient sage hermitage. Peaceful, ideal for meditation.',
+        timings: '5 AM – 10 PM',
+        distance: '2km from Ram Kund',
+        badge: 'Meditation'
+      },
+      {
+        name: 'Sita Gund',
+        lat: 20.0035, lng: 73.7905,
+        color: '#C8960C',
+        desc: 'Dedicated to Goddess Sita. Venerated by women pilgrims.',
+        timings: '5 AM – 9 PM',
+        distance: 'Near Ram Kund',
+        badge: 'Women Pilgrims'
+      },
+      {
+        name: 'Ahilyadevi Ghat',
+        lat: 20.0031, lng: 73.7908,
+        color: '#B84C1A',
+        desc: 'Maratha heritage ghat built by Queen Ahilyabai Holkar.',
+        timings: 'Open 24/7 during Kumbh',
+        distance: 'Attached to Ram Kund',
+        badge: 'Maratha Heritage'
+      },
+      {
+        name: 'Kapileshwar Ghat',
+        lat: 20.0045, lng: 73.7925,
+        color: '#C8960C',
+        desc: 'Ancient Kapileshwar Mahadev temple. Major Shaiva pilgrimage site.',
+        timings: '5 AM – 10 PM',
+        distance: '1.5km from Ram Kund',
+        badge: 'Shiva Temple'
+      }
+    ];
+
+    // INIT MAP
+    const map = L.map('ghats-map').setView([20.0045, 73.7910], 15);
+
+    // Warm tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(map);
+
+    const markers = [];
+
+    ghats.forEach((g, i) => {
+      // Custom colored marker
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="
+          background:${g.color};
+          color:white;
+          width:34px;height:34px;
+          border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);
+          border:3px solid rgba(255,255,255,0.8);
+          box-shadow:0 3px 12px rgba(0,0,0,0.4);
+          display:flex;align-items:center;justify-content:center;
+        ">
+          <span style="transform:rotate(45deg);font-size:14px;font-weight:700;">${i+1}</span>
+        </div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -38]
+      });
+
+      const marker = L.marker([g.lat, g.lng], { icon })
+        .bindPopup(`
+          <h4>📍 ${g.name}</h4>
+          <p><strong style="color:#D4AF37;">Type:</strong> ${g.badge}</p>
+          <p>${g.desc}</p>
+          <p><strong style="color:#D4AF37;">Timings:</strong> ${g.timings}</p>
+          <p><strong style="color:#D4AF37;">Distance:</strong> ${g.distance}</p>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lng}" target="_blank">📍 Get Directions</a>
+        `)
+        .addTo(map);
+
+      markers.push(marker);
+    });
+
+    // Focus function (called from ghat cards)
+    function focusGhat(index) {
+      const g = ghats[index];
+      map.setView([g.lat, g.lng], 17, { animate: true });
+      markers[index].openPopup();
+      document.querySelector('.map-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Fit all markers
+    const group = L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(0.15));
+  </script>
+</body>
+</html>

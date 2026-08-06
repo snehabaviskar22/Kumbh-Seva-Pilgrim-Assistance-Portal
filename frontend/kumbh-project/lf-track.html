@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Status – Kumbh Mela L&F</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .track-form {
+      background:#FFFFFF;
+      border:1px solid rgba(232,100,10,0.15);
+      border-radius:16px;
+      padding:30px;
+      max-width:600px;
+      margin:0 auto 40px;
+    }
+
+    .track-result {
+      background:#FFFFFF;
+      border:1px solid rgba(232,100,10,0.2);
+      border-radius:16px;
+      padding:28px;
+      max-width:700px;
+      margin:0 auto;
+      display:none;
+    }
+
+    .status-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .status-header h3 {
+      color:var(--orange);
+      font-size:1.2rem;
+    }
+
+    .progress-bar {
+      position:relative;
+      padding-left:36px;
+    }
+
+    .progress-bar::before {
+      content:'';
+      position:absolute;
+      left:10px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:rgba(232,100,10,0.2);
+    }
+
+    .prog-step {
+      position:relative;
+      margin-bottom:24px;
+    }
+
+    .prog-dot {
+      position:absolute;
+      left:-29px;
+      top:4px;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#FFFFFF;
+      border:2px solid rgba(232,100,10,0.2);
+    }
+
+    .prog-dot.done {
+      background:var(--orange);
+      border-color:var(--orange);
+    }
+
+    .prog-dot.current {
+      background:var(--orange);
+      border-color:var(--orange);
+      box-shadow:0 0 12px rgba(232,100,10,0.6);
+    }
+
+    .prog-step h4 {
+      font-size:0.95rem;
+      margin-bottom:3px;
+    }
+
+    .prog-step h4.done-text {
+      color:var(--orange);
+    }
+
+    .prog-step h4.pending-text {
+      color:#a08060;
+    }
+
+    .prog-step p {
+      color:#a08060;
+      font-size:0.82rem;
+    }
+
+    .lf-nav {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:30px;
+    }
+
+    .lf-nav a {
+      padding:8px 16px;
+      border-radius:20px;
+      background:#FFFFFF;
+      border:1px solid rgba(232,100,10,0.15);
+      color:var(--text-main);
+      font-size:0.85rem;
+      transition:all 0.2s;
+    }
+
+    .lf-nav a:hover {
+      background:rgba(232,100,10,0.15);
+      color:var(--orange);
+    }
+
+    .lf-nav a.active {
+      background:rgba(232,100,10,0.2);
+      color:var(--orange);
+      border-color:var(--orange);
+    }
+
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+
+  <div class="navbar-brand">
+    <span class="om">🕉</span>
+    <span>Kumbh Mela Nashik</span>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="lost-found.html">Lost & Found</a></li>
+    <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+  </ul>
+
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="lost-found.html">🔍 Lost & Found</a>
+  <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+</div>
+
+<div class="page-hero">
+  <h1>📱 Track Item Status</h1>
+  <p>Enter your Reference ID to check the current status of your report</p>
+</div>
+
+<section class="section">
+
+  <div class="lf-nav">
+    <a href="lost-found.html">← L&F Home</a>
+    <a href="lf-view-lost.html">🚫 Lost Items</a>
+    <a href="lf-view-found.html">✅ Found Items</a>
+    <a href="lf-track.html" class="active">📱 Track Status</a>
+  </div>
+
+  <div class="track-form">
+
+    <h3 style="color:var(--orange);margin-bottom:20px;">
+      🔍 Enter Your Reference ID
+    </h3>
+
+    <div class="form-group">
+      <label>Reference ID</label>
+      <input type="text" id="refInput" placeholder="Enter ID">
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number (last 4 digits)</label>
+      <input type="text" id="phoneInput" placeholder="XXXX" maxlength="4">
+    </div>
+
+    <button class="btn btn-primary"
+            style="width:100%;"
+            onclick="trackItem()">
+
+      Track My Item →
+
+    </button>
+
+  </div>
+
+  <div class="track-result" id="trackResult">
+
+    <div class="status-header">
+
+      <div>
+
+        <div style="color:var(--text-muted);
+                    font-size:0.8rem;
+                    margin-bottom:4px;">
+
+          Reference:
+          <strong style="color:var(--orange);" id="refId"></strong>
+
+        </div>
+
+        <h3 id="itemName"></h3>
+
+      </div>
+
+      <span class="badge badge-lost"
+            id="itemStatus">
+      </span>
+
+    </div>
+
+    <div style="display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:16px;
+                margin-bottom:24px;">
+
+      <div style="background:#FFFFFF;
+                  padding:14px;
+                  border-radius:10px;">
+
+        <div style="color:var(--text-muted);
+                    font-size:0.78rem;">
+
+          Location
+
+        </div>
+
+        <div id="itemLocation"
+             style="color:var(--text-main);
+                    font-size:0.9rem;
+                    margin-top:4px;">
+
+        </div>
+
+      </div>
+
+      <div style="background:#FFFFFF;
+                  padding:14px;
+                  border-radius:10px;">
+
+        <div style="color:var(--text-muted);
+                    font-size:0.78rem;">
+
+          Current Status
+
+        </div>
+
+        <div id="statusText"
+             style="color:var(--text-main);
+                    font-size:0.9rem;
+                    margin-top:4px;">
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <h4 style="color:var(--orange);margin-bottom:16px;">
+      Progress
+    </h4>
+
+    <div class="progress-bar">
+
+      <div class="prog-step">
+        <div class="prog-dot done"></div>
+        <h4 class="done-text">✓ Report Received</h4>
+        <p>Item report submitted successfully.</p>
+      </div>
+
+      <div class="prog-step">
+        <div class="prog-dot current"></div>
+        <h4 class="done-text">→ Tracking Active</h4>
+        <p>Your item is currently under tracking.</p>
+      </div>
+
+      <div class="prog-step">
+        <div class="prog-dot"></div>
+        <h4 class="pending-text">Item Found</h4>
+        <p>Pending</p>
+      </div>
+
+      <div class="prog-step">
+        <div class="prog-dot"></div>
+        <h4 class="pending-text">Returned to Owner</h4>
+        <p>Pending</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<footer class="footer">
+
+  <div style="text-align:center;padding-bottom:20px;">
+    <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+
+    <p class="footer-copy">
+      © 2027 Kumbh Seva Pilgrim Portal, Nashik.
+    </p>
+  </div>
+
+</footer>
+
+<script>
+
+window.addEventListener('scroll',()=> 
+document.getElementById('navbar')
+.classList.toggle('scrolled',scrollY>60));
+
+document.getElementById('hamburger')
+.addEventListener('click',()=> 
+document.getElementById('mobileMenu')
+.classList.toggle('open'));
+
+function trackItem() {
+
+  let ref = document.getElementById("refInput").value;
+
+  ref = ref.replace("#LF", "");
+
+  fetch("http://localhost:8080/track/" + ref.trim())
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data == null){
+      alert("Item not found");
+      return;
+    }
+
+    document.getElementById("refId").innerText =
+      "#LF00" + data.id;
+
+    document.getElementById("itemName").innerText =
+      data.itemName;
+
+    document.getElementById("itemStatus").innerText =
+      data.status;
+
+    document.getElementById("itemLocation").innerText =
+      data.location;
+
+    document.getElementById("statusText").innerText =
+      data.status;
+
+    document.getElementById("trackResult")
+      .style.display = "block";
+
+    document.getElementById("trackResult")
+      .scrollIntoView({behavior:'smooth'});
+
+  })
+
+  .catch(err => {
+    console.log(err);
+    alert("Error fetching item");
+  });
+
+}
+
+</script>
+
+</body>
+</html>
+

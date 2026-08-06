@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Lost Item – Kumbh Mela Lost & Found</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-card { background:#FFFFFF; border:1px solid rgba(192,57,43,0.3); border-radius:18px; padding:40px; max-width:700px; margin:0 auto; }
+    .form-card h2 { color:#e74c3c; margin-bottom:6px; font-size:1.5rem; }
+    .form-card .sub { color:#a08060; margin-bottom:30px; font-size:0.9rem; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+    .ref-box { background:rgba(39,174,96,0.1); border:1px solid rgba(46,204,113,0.3); border-radius:12px; padding:20px; text-align:center; display:none; margin-top:20px; }
+    .ref-box h3 { color:#2ecc71; margin-bottom:8px; }
+    .ref-box .ref-num { font-size:2rem; font-weight:800; color:var(--orange); }
+    .ref-box p { color:#a0c0a0; font-size:0.88rem; margin-top:8px; }
+    .lf-nav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px; }
+    .lf-nav a { padding:8px 16px; border-radius:20px; background:#FFFFFF; border:1px solid rgba(232,100,10,0.15); color:var(--text-main); font-size:0.85rem; transition:all 0.2s; }
+    .lf-nav a:hover { background:rgba(232,100,10,0.15); color:var(--orange); }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="lost-found.html">Lost & Found</a></li>
+    <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="lost-found.html">🔍 Lost & Found</a>
+  <a href="emergency.html" style="color:#e74c3c;">🚨 Emergency</a>
+</div>
+
+<div class="page-hero" style="background:linear-gradient(135deg,#FFF3E8,#FFE8D0,#FFF3E8);">
+  <h1 style="color:#e74c3c;">🚫 Report Lost Item</h1>
+  <p>Provide as many details as possible to help us locate your item</p>
+</div>
+
+<section class="section">
+
+  <div class="lf-nav">
+    <a href="lost-found.html">← L&F Home</a>
+    <a href="lf-report-found.html">✅ Report Found</a>
+    <a href="lf-view-lost.html">📋 View Lost Items</a>
+    <a href="lf-track.html">📱 Track Status</a>
+  </div>
+
+  <div class="form-card">
+    <h2>🚫 Report a Lost Item</h2>
+    <p class="sub">You will receive a Reference ID to track your report status</p>
+
+  <form 
+  id="lostForm"
+  action="http://localhost:8080/report-lost"
+  method="post"
+  enctype="multipart/form-data">
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Your Full Name *</label>
+      <input type="text" id="name" name="fullName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number *</label>
+      <input type="tel" id="phone" name="phoneNumber" required>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" id="email" name="email">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Item Name *</label>
+      <input type="text" id="itemName" name="itemName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Category *</label>
+      <select id="itemCategory" name="category" required>
+        <option value="">Select</option>
+        <option>Bag / Luggage</option>
+        <option>Electronics (Phone, Camera)</option>
+        <option>Wallet / Money / Cards</option>
+        <option>Jewellery / Ornaments</option>
+        <option>Documents</option>
+        <option>Clothing</option>
+        <option>Child / Person</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+
+ 
+  <div class="form-group">
+    <label>Upload Item Photo</label>
+    <input type="file" id="itemPhoto" name="itemPhoto" accept="image/*">
+  </div>
+
+  
+  <div class="form-group">
+    <label>Description *</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Location *</label>
+      <select id="location" name="location" required>
+        <option value="">Select</option>
+        <option>Ram Kund</option>
+        <option>Tapovan</option>
+        <option>Nashik Station</option>
+        <option>Bus Stand</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Date & Time *</label>
+      <input type="datetime-local" id="dateTimeLost" name="dateTimeLost" required>
+    </div>
+  </div>
+
+  
+  <div class="form-group" id="personFields" style="display:none; margin-top:20px;">
+    <h3 style="color:#e74c3c;">👤 Missing Person Details</h3>
+
+    <div class="form-group">
+      <label>Person Photos</label>
+      <input type="file" id="personPhotos" name="personPhoto" multiple>
+    </div>
+
+    <div class="form-group" class="form-row">
+      <input type="number" id="age" name="age" placeholder="Age">
+      <input type="text" id="height" name="height" placeholder="Height">
+    </div>
+
+    <div class="form-group">
+      <select id="gender" name="gender">
+        <option value="">Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+    </div>
+<div class="form-group">
+    <textarea id="identification"
+              name="physicalIdentification"
+              placeholder="Physical identification"></textarea>
+</div>
+  </div>
+
+  <button type="submit" class="btn btn-danger" style="width:100%;">
+    Submit
+  </button>
+
+</form>
+    <div class="ref-box" id="refBox">
+      <h3>✅ Submitted!</h3>
+      <p>We will contact you soon.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const category = document.getElementById("itemCategory");
+  const personFields = document.getElementById("personFields");
+  const form = document.getElementById("lostForm");
+
+  category.addEventListener("change", function () {
+    if (this.value === "Child / Person") {
+      personFields.style.display = "block";
+    } else {
+      personFields.style.display = "none";
+    }
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch("http://localhost:8080/report-lost", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+      alert("Data saved successfully!");
+      form.reset();
+      personFields.style.display = "none";
+    })
+    .catch(err => {
+      alert("Error saving data");
+      console.log(err);
+    });
+
+  });
+
+});
+</script>
+</body>
+</html>
