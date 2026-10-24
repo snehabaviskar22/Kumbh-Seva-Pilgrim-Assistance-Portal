@@ -1,226 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Login & Register</title>
-
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: Arial;
-}
-
-body{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background: linear-gradient(to right,#fff3e6,#ffe0cc);
-}
-
-/* MAIN */
-.container{
-  width:800px;
-  height:450px;
-  display:flex;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  background:#fff;
-}
-
-/* LEFT SIDE (FORMS) */
-.forms{
-  width:50%;
-  overflow:hidden;
-}
-
-.slider{
-  width:200%;
-  display:flex;
-  transition:0.6s ease;
-}
-
-/* EACH FORM */
-.form-box{
-  width:50%;
-  height:450px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-form{
-  width:80%;
-  display:flex;
-  flex-direction:column;
-}
-
-h1{
-  text-align:center;
-  color:#ff6600;
-  margin-bottom:15px;
-}
-
-input{
-  margin:8px 0;
-  padding:10px;
-  border:1px solid #ccc;
-  border-radius:5px;
-}
-
-button{
-  margin-top:10px;
-  padding:10px;
-  background:#ff6600;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-
-/* RIGHT PANEL */
-.side{
-  width:50%;
-  background:#ff6600;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-}
-
-.side h2{
-  margin-bottom:10px;
-}
-
-.side button{
-  padding:8px 15px;
-  background:transparent;
-  border:1px solid white;
-  color:white;
-  cursor:pointer;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login &amp; Register – KumbhSeva Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #FFF3E8 0%, #FFE8D0 50%, #FFF3E8 100%);
+    }
+    .auth-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #FFFFFF;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(232,100,10,0.15);
+      border: 1px solid rgba(232,100,10,0.2);
+      overflow: hidden;
+      display: flex;
+    }
+    @media(max-width: 768px) {
+      .auth-container { flex-direction: column; margin: 20px 16px; }
+      .side-panel { padding: 30px 20px !important; }
+    }
+    .forms-panel {
+      flex: 1.2;
+      padding: 40px 36px;
+    }
+    .side-panel {
+      flex: 0.8;
+      background: linear-gradient(145deg, var(--orange-dark), var(--orange));
+      color: #FFFFFF;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .side-panel h2 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+    }
+    .side-panel p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .quick-roles {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px;
+      width: 100%;
+      text-align: left;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+    .quick-roles h4 {
+      margin-bottom: 8px;
+      color: #FFE8D0;
+      font-size: 0.88rem;
+    }
+    .role-btn {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #FFFFFF;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: left;
+      transition: background 0.2s;
+    }
+    .role-btn:hover {
+      background: #FFFFFF;
+      color: var(--orange-dark);
+    }
+    .auth-tab-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid rgba(232,100,10,0.15);
+      padding-bottom: 10px;
+    }
+    .auth-tab-btn {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding-bottom: 6px;
+      position: relative;
+    }
+    .auth-tab-btn.active {
+      color: var(--orange);
+    }
+    .auth-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--orange);
+      border-radius: 2px;
+    }
+    .form-section {
+      display: none;
+    }
+    .form-section.active {
+      display: block;
+    }
+    .msg-box {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+    }
+    .msg-box.success {
+      background: rgba(39,174,96,0.15);
+      color: #27ae60;
+      border: 1px solid rgba(39,174,96,0.3);
+    }
+    .msg-box.error {
+      background: rgba(192,57,43,0.15);
+      color: #c0392b;
+      border: 1px solid rgba(192,57,43,0.3);
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+  <!-- Top Simple Nav -->
+  <header style="padding: 16px 30px; display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border-bottom:1px solid rgba(232,100,10,0.15);">
+    <a href="index.html" style="display:flex; align-items:center; gap:8px; font-weight:700; color:var(--orange); font-size:1.15rem;">
+      <span style="font-size:1.5rem;">🕉</span> KumbhSeva Nashik 2027
+    </a>
+    <a href="index.html" class="btn btn-outline" style="padding:6px 16px; font-size:0.85rem;">← Back to Home</a>
+  </header>
 
-  <!-- FORMS -->
-  <div class="forms">
-    <div class="slider" id="slider">
+  <main style="flex:1; display:flex; align-items:center;">
+    <div class="auth-container">
+      
+      <!-- Forms Section -->
+      <div class="forms-panel">
+        
+        <div class="auth-tab-row">
+          <button class="auth-tab-btn active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+          <button class="auth-tab-btn" id="tabRegister" onclick="switchTab('register')">New Registration</button>
+        </div>
 
-      <!-- LOGIN -->
-      <div class="form-box">
-        <form>
-          <h1>Login</h1>
-          <input id="loginEmail" type="email" placeholder="Email">
-          <input id="loginPassword" type="password" placeholder="Password">
-          <button onclick="login()" type="button">Login</button>
-        </form>
+        <div id="authMessage" class="msg-box"></div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginSection" class="form-section active">
+          <form id="loginForm" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" id="loginEmail" placeholder="e.g. pilgrim@example.com" required>
+            </div>
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">
+              Sign In to Portal →
+            </button>
+          </form>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="registerSection" class="form-section">
+          <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="regName" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" id="regEmail" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>Account Role *</label>
+              <select id="regRole" required>
+                <option value="PILGRIM" selected>Pilgrim (General Public)</option>
+                <option value="VOLUNTEER">Seva Volunteer (Field Support)</option>
+                <option value="ADMIN">Mela Administrator (Management)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Contact Phone (Optional)</label>
+              <input type="tel" id="regPhone" placeholder="+91 XXXXX XXXXX">
+            </div>
+            <div class="form-group">
+              <label>Create Password *</label>
+              <input type="password" id="regPassword" placeholder="At least 5 characters" required minlength="5">
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%; margin-top:10px;">
+              Create Account →
+            </button>
+          </form>
+        </div>
+
       </div>
 
-      <!-- REGISTER -->
-      <div class="form-box">
-        <form>
-          <h1>Register</h1>
-          <input id="name" type="text" placeholder="Name">
-          <input id="email" type="email" placeholder="Email">
-          <input id="password" type="password" placeholder="Password">
-          <button onclick="register()" type="button">Register</button>
-        </form>
+      <!-- Right Help & Demo Credentials -->
+      <div class="side-panel">
+        <span style="font-size:3rem; margin-bottom:12px;">🕉</span>
+        <h2>Welcome to KumbhSeva</h2>
+        <p>Access the unified lost-and-found registry, monitor claim resolutions, and coordinate pilgrim support for Nashik Simhastha 2027.</p>
+        
+        <div class="quick-roles">
+          <h4>⚡ Academic Demo Quick-Fill:</h4>
+          <button type="button" class="role-btn" onclick="fillCreds('admin@kumbhseva.org','admin123')">
+            🛡️ Admin (admin@kumbhseva.org)
+          </button>
+          <button type="button" class="role-btn" onclick="fillCreds('volunteer@kumbhseva.org','volunteer123')">
+            🤝 Volunteer (volunteer@kumbhseva.org)
+          </button>
+          <button type="button" class="role-btn" onclick="fillCreds('snehabaviskar025@gmail.com','12345')">
+            👤 Pilgrim (snehabaviskar025@gmail.com)
+          </button>
+        </div>
       </div>
 
     </div>
-  </div>
+  </main>
 
-  <!-- SIDE -->
-  <div class="side">
-    <h2 id="text">New here?</h2>
-    <button onclick="toggle()">Register</button>
-  </div>
+  <footer class="footer" style="padding:20px; background:#1A0800;">
+    <div style="text-align:center;">
+      <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+      <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+    </div>
+  </footer>
 
-</div>
+  <script>
+    function switchTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tabLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+      document.getElementById('loginSection').classList.toggle('active', isLogin);
+      document.getElementById('registerSection').classList.toggle('active', !isLogin);
+      hideMsg();
+    }
 
-<script>
+    function showMsg(text, isSuccess) {
+      const box = document.getElementById('authMessage');
+      box.textContent = text;
+      box.className = 'msg-box ' + (isSuccess ? 'success' : 'error');
+      box.style.display = 'block';
+    }
 
-let isRegister = false;
-const slider = document.getElementById("slider");
-const text = document.getElementById("text");
+    function hideMsg() {
+      const box = document.getElementById('authMessage');
+      box.style.display = 'none';
+    }
 
-function toggle(){
-  if(!isRegister){
-    slider.style.transform = "translateX(-50%)";
-    text.innerText = "Already have an account?";
-    document.querySelector(".side button").innerText = "Login";
-  } else {
-    slider.style.transform = "translateX(0)";
-    text.innerText = "New here?";
-    document.querySelector(".side button").innerText = "Register";
-  }
-  isRegister = !isRegister;
-}
+    function fillCreds(email, pwd) {
+      switchTab('login');
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = pwd;
+      showMsg("Credentials filled! Click 'Sign In to Portal'.", true);
+    }
 
-/* ================= REGISTER ================= */
-function register() {
+    /* Handle Login */
+    function handleLogin(e) {
+      e.preventDefault();
+      hideMsg();
 
-    const user = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-    };
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
 
-    fetch("http://localhost:8080/register", {
+      fetch("http://localhost:8080/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user)
-    })
-    .then(res => res.text())
-    .then(data => {
-        alert(data);
-        toggle(); // switch to login
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Registration failed");
-    });
-}
-
-/* ================= LOGIN ================= */
-function login() {
-
-    const user = {
-        email: document.getElementById("loginEmail").value,
-        password: document.getElementById("loginPassword").value
-    };
-
-    fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ email, password }),
         credentials: "include"
-    })
-    .then(res => res.text())
-    .then(data => {
-        if(data === "Login Success"){  
-          localStorage.setItem("loggedIn", "true");// ✅ FIXED
-            window.location.href = "lost-found.html";
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success" || data.message === "Login Success") {
+          localStorage.setItem("loggedIn", "true");
+          localStorage.setItem("userRole", data.role || "PILGRIM");
+          localStorage.setItem("userName", data.name || email);
+          localStorage.setItem("userEmail", data.email || email);
+          if (data.userId) localStorage.setItem("userId", data.userId);
+
+          showMsg("Login successful! Redirecting...", true);
+
+          setTimeout(() => {
+            if (data.role === "ADMIN" || data.role === "VOLUNTEER") {
+              window.location.href = "lf-admin.html";
+            } else {
+              window.location.href = "lost-found.html";
+            }
+          }, 600);
+        } else if (data.status === "pending_approval") {
+          showMsg("⏳ " + data.message, false);
         } else {
-            alert(data);
+          showMsg(data.message || "Invalid email or password", false);
         }
-    })
-    .catch(err => {
+      })
+      .catch(err => {
         console.error(err);
-        alert("Login failed");
-    });
-}
+        showMsg("Could not connect to backend server on localhost:8080. Please ensure the backend is running.", false);
+      });
 
-</script>
+      return false;
+    }
 
+    /* Handle Register */
+    function handleRegister(e) {
+      e.preventDefault();
+      hideMsg();
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const role = document.getElementById('regRole').value;
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+
+      fetch("http://localhost:8080/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, role, phone, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          if (data.accountStatus === "PENDING" || role === "VOLUNTEER") {
+            showMsg("🙏 Volunteer registration submitted! Your account is pending administrator approval before field access.", true);
+          } else {
+            showMsg("Account created successfully! Please sign in.", true);
+          }
+          switchTab('login');
+          document.getElementById('loginEmail').value = email;
+          document.getElementById('loginPassword').value = password;
+        } else {
+          showMsg(data.message || "Registration failed.", false);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showMsg("Could not connect to backend server on localhost:8080.", false);
+      });
+
+      return false;
+    }
+  </script>
 </body>
 </html>

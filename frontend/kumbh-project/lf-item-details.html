@@ -98,48 +98,140 @@
   <script>
     window.addEventListener('DOMContentLoaded', loadDetails);
 
-function loadDetails() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+    function loadDetails() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const type = (params.get("type") || "").toLowerCase();
 
-  fetch(`http://localhost:8080/found-items/${id}`)
-    .then(res => res.json())
-    .then(item => {
+      if (!id) {
+        document.querySelector(".detail-header h2").innerText = "Item Not Specified";
+        document.querySelector(".detail-body").innerHTML = '<p style="padding:20px;text-align:center;">Please provide an Item ID in the URL, e.g. lf-item-details.html?id=1</p>';
+        return;
+      }
 
-      document.querySelector(".detail-header h2").innerText = "📦 " + item.itemName;
+      const primaryUrl = (type === "lost") ? `http://localhost:8080/lost-items/${id}` : `http://localhost:8080/found-items/${id}`;
+      const fallbackUrl = (type === "lost") ? `http://localhost:8080/found-items/${id}` : `http://localhost:8080/lost-items/${id}`;
 
-      document.querySelector(".detail-header div").innerHTML =
-        "Reference ID: #LF" + item.id;
+      fetch(primaryUrl)
+        .then(res => {
+          if (!res.ok) throw new Error("Not in primary");
+          return res.json();
+        })
+        .then(item => {
+          if (!item) return fetchFallback(fallbackUrl, id);
+          renderItemDetails(item, type === "lost" ? "lost" : "found");
+        })
+        .catch(() => {
+          fetchFallback(fallbackUrl, id);
+        });
+    }
+
+    function fetchFallback(url, id) {
+      fetch(url)
+        .then(res => res.json())
+        .then(item => {
+          if (!item) {
+            document.querySelector(".detail-header h2").innerText = "Item Not Found";
+            document.querySelector(".detail-body").innerHTML = `<p style="padding:30px;text-align:center;color:var(--text-muted);">No report found with Reference ID #LF${id}.</p>`;
+            return;
+          }
+          const inferredType = item.dateTimeLost ? "lost" : "found";
+          renderItemDetails(item, inferredType);
+        })
+        .catch(err => {
+          console.error(err);
+          document.querySelector(".detail-header h2").innerText = "Item Not Found";
+          document.querySelector(".detail-body").innerHTML = `<p style="padding:30px;text-align:center;color:var(--text-muted);">Unable to load item details.</p>`;
+        });
+    }
+
+    function renderItemDetails(item, inferredType) {
+      const isLost = inferredType === "lost";
+      const icon = isLost ? "🚫 " : "📦 ";
+
+      document.querySelector(".detail-header h2").innerText = icon + (item.itemName || "Item Details");
+      document.querySelector(".detail-header div").innerHTML = "Reference ID: #LF" + String(item.id).padStart(3, '0');
+
+      const headerBadge = document.querySelector(".detail-header .badge");
+      const st = (item.status || (isLost ? "Lost" : "Found"));
+      headerBadge.innerText = st;
+      if (st.toLowerCase().includes("return")) {
+        headerBadge.className = "badge badge-returned";
+      } else if (isLost) {
+        headerBadge.className = "badge badge-lost";
+      } else {
+        headerBadge.className = "badge badge-found";
+      }
 
       const fields = document.querySelectorAll(".detail-field .value");
+      fields[0].innerText = item.category || "General";
+      fields[1].innerText = formatDate(item.dateTimeLost || item.datetimeFound);
+      fields[2].innerText = "📍 " + (item.location || item.locationFound || "Nashik Grounds");
+      fields[3].innerText = item.fullName || "Registered Citizen";
 
-      fields[0].innerText = item.category;
-      fields[1].innerText = formatDate(item.datetimeFound);
-      fields[2].innerText = "📍 " + item.locationFound;
-      fields[3].innerText = item.fullName;
-      fields[4].innerText = item.phone;
-      fields[5].innerHTML = '<span class="badge badge-found">Found</span>';
+      // Mask phone for general public if user is not ADMIN or VOLUNTEER
+      const currentUserRole = localStorage.getItem("userRole");
+      const phone = item.phoneNumber || item.phone || "Not specified";
+      if (currentUserRole === "ADMIN" || currentUserRole === "VOLUNTEER") {
+        fields[4].innerText = phone;
+      } else {
+        fields[4].innerText = phone.length > 5 ? phone.substring(0, 4) + "******" : phone;
+      }
 
-      document.querySelector(".detail-body .value:last-child")
-        .innerText = item.description;
+      fields[5].innerHTML = `<span class="${headerBadge.className}">${st}</span>`;
 
-      
-      if(item.imageUrl){
+      // Full description
+      let fullDesc = item.description || "No description provided.";
+      if (item.physicalIdentification) {
+        fullDesc += `\n\n[Physical Marks / Identification: ${item.physicalIdentification}]`;
+      }
+      if (item.age || item.gender || item.height) {
+        fullDesc += `\n[Demographics: Age: ${item.age || 'N/A'}, Gender: ${item.gender || 'N/A'}, Height: ${item.height || 'N/A'}]`;
+      }
+      document.querySelector(".detail-body .value:last-child").innerText = fullDesc;
+
+      // Handle Image
+      const existingImg = document.getElementById("detailItemImage");
+      if (existingImg) existingImg.remove();
+
+      if (item.imageUrl) {
         const img = document.createElement("img");
+        img.id = "detailItemImage";
         img.src = "http://localhost:8080" + item.imageUrl;
+        img.alt = item.itemName || "Item Photo";
         img.style.width = "100%";
+        img.style.maxHeight = "380px";
+        img.style.objectFit = "cover";
         img.style.borderRadius = "12px";
-        img.style.marginBottom = "20px";
-
+        img.style.marginBottom = "24px";
+        img.onerror = function() { this.style.display = 'none'; };
         document.querySelector(".detail-body").prepend(img);
       }
-    });
-}
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString() + " • " + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-}
+      // Action buttons
+      const actions = document.querySelector(".detail-actions");
+      if (isLost) {
+        actions.innerHTML = `
+          <a href="lf-track.html?id=${item.id}" class="btn btn-primary">📱 Track Status</a>
+          <a href="lf-view-lost.html" class="btn btn-outline">← Back to Lost Items</a>
+          <a href="lost-found.html" class="btn btn-outline">L&amp;F Home</a>
+        `;
+      } else {
+        const canClaim = !st.toLowerCase().includes("return") && item.category !== "Child / Person";
+        actions.innerHTML = `
+          ${canClaim ? `<a href="lf-claim-item.html?id=${item.id}" class="btn btn-gold">🔐 Claim This Item</a>` : ''}
+          <a href="lf-track.html?id=${item.id}" class="btn btn-outline">📱 Track Status</a>
+          <a href="lf-view-found.html" class="btn btn-outline">← Back to Found Items</a>
+        `;
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "Recent";
+      const d = new Date(dateStr);
+      if (isNaN(d)) return "Recent";
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) + " • " + d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    }
   </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,109 +12,230 @@
   <style>
     /* GHAT CARDS */
     .ghats-grid {
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-      gap:26px; margin-top:20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 26px;
+      margin-top: 20px;
     }
+
     .ghat-card {
       background: #FFFFFF;
-      border:1px solid rgba(232,100,10,0.2);
-      border-radius:18px; overflow:hidden;
-      cursor:default;
-      transition:box-shadow 0.3s, transform 0.3s;
+      border: 1px solid rgba(232, 100, 10, 0.2);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: default;
+      transition: box-shadow 0.3s, transform 0.3s;
     }
+
     .ghat-card:hover {
-      box-shadow:0 20px 60px rgba(232,100,10,0.25);
+      box-shadow: 0 20px 60px rgba(232, 100, 10, 0.25);
       transform: translateY(-4px);
     }
+
     .ghat-img {
-      height:200px; position:relative; overflow:hidden;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
     }
+
     .ghat-img img {
-      width:100%; height:100%; object-fit:cover; display:block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
       transition: transform 0.5s;
     }
-    .ghat-card:hover .ghat-img img { transform: scale(1.06); }
+
+    .ghat-card:hover .ghat-img img {
+      transform: scale(1.06);
+    }
+
     .ghat-img .ghat-num {
-      position:absolute; top:14px; right:14px;
-      background:rgba(28,15,8,0.8); color:var(--orange);
-      padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;
-      border:1px solid rgba(232,100,10,0.4);
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(28, 15, 8, 0.8);
+      color: var(--orange);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid rgba(232, 100, 10, 0.4);
     }
+
     .ghat-badge {
-      position:absolute; bottom:14px; left:14px;
-      background:rgba(232,100,10,0.85); color:#fff;
-      padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:600;
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      background: rgba(232, 100, 10, 0.85);
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
-    .ghat-body { padding:22px; }
-    .ghat-body h3 { color:var(--orange); font-size:1.2rem; margin-bottom:6px; }
-    .ghat-body .location { color:var(--orange-light); font-size:0.83rem; margin-bottom:10px; font-weight:500; }
-    .ghat-body p { color:#C0A080; font-size:0.9rem; line-height:1.7; }
-    .ghat-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+
+    .ghat-body {
+      padding: 22px;
+    }
+
+    .ghat-body h3 {
+      color: var(--orange);
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+
+    .ghat-body .location {
+      color: var(--orange-light);
+      font-size: 0.83rem;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .ghat-body p {
+      color: #C0A080;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .ghat-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
     .ghat-tag {
-      background:rgba(232,100,10,0.1); color:var(--orange);
-      padding:3px 10px; border-radius:14px; font-size:0.76rem;
-      border:1px solid rgba(232,100,10,0.2);
+      background: rgba(232, 100, 10, 0.1);
+      color: var(--orange);
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 0.76rem;
+      border: 1px solid rgba(232, 100, 10, 0.2);
     }
+
     .ghat-footer {
-      border-top:1px solid rgba(232,100,10,0.1);
-      padding:13px 22px; display:flex; justify-content:space-between; align-items:center;
+      border-top: 1px solid rgba(232, 100, 10, 0.1);
+      padding: 13px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .ghat-footer .dist { color:#8A6040; font-size:0.82rem; }
+
+    .ghat-footer .dist {
+      color: #8A6040;
+      font-size: 0.82rem;
+    }
+
     .ghat-footer a {
-      color:var(--orange-light); font-size:0.83rem; font-weight:600;
-      display:flex; align-items:center; gap:4px;
+      color: var(--orange-light);
+      font-size: 0.83rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
-    .ghat-footer a:hover { color:var(--orange); }
+
+    .ghat-footer a:hover {
+      color: var(--orange);
+    }
 
     /* MAP SECTION */
     .map-section {
       margin-top: 60px;
-      border-radius: 20px; overflow: hidden;
-      border: 2px solid rgba(232,100,10,0.2);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(232, 100, 10, 0.2);
     }
+
     .map-header {
       background: linear-gradient(135deg, #FFF3E8, #FFE8D0);
       padding: 24px 30px;
-      border-bottom: 1px solid rgba(232,100,10,0.2);
+      border-bottom: 1px solid rgba(232, 100, 10, 0.2);
     }
-    .map-header h3 { color: var(--orange); font-size: 1.4rem; margin-bottom: 6px; }
-    .map-header p { color: var(--orange); font-size: 0.9rem; }
+
+    .map-header h3 {
+      color: var(--orange);
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .map-header p {
+      color: var(--orange);
+      font-size: 0.9rem;
+    }
+
     #ghats-map {
-      height: 480px; width: 100%;
+      height: 480px;
+      width: 100%;
     }
+
     .map-legend {
       background: #FFF8F3;
       padding: 16px 30px;
-      display: flex; flex-wrap: wrap; gap: 16px;
-      border-top: 1px solid rgba(232,100,10,0.15);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-top: 1px solid rgba(232, 100, 10, 0.15);
     }
+
     .legend-item {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.85rem; color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--orange);
     }
+
     .legend-dot {
-      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     /* POPUP OVERRIDE */
     .leaflet-popup-content-wrapper {
       background: #FFF0E0;
-      border: 1px solid rgba(232,100,10,0.4);
+      border: 1px solid rgba(232, 100, 10, 0.4);
       border-radius: 12px;
       color: #EDE0C4;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     }
-    .leaflet-popup-tip { background: #FFF0E0; }
-    .leaflet-popup-content h4 { color: var(--orange-dark); font-size: 1rem; margin-bottom: 6px; }
-    .leaflet-popup-content p { font-size: 0.83rem; color: var(--text-muted); margin: 3px 0; }
+
+    .leaflet-popup-tip {
+      background: #FFF0E0;
+    }
+
+    .leaflet-popup-content h4 {
+      color: var(--orange-dark);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .leaflet-popup-content p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin: 3px 0;
+    }
+
     .leaflet-popup-content a {
-      display: inline-block; margin-top: 8px;
-      background: #B84C1A; color: white;
-      padding: 5px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 600;
+      display: inline-block;
+      margin-top: 8px;
+      background: #B84C1A;
+      color: white;
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
     }
-    .leaflet-popup-close-button { color: var(--orange) !important; }
+
+    .leaflet-popup-close-button {
+      color: var(--orange) !important;
+    }
   </style>
 </head>
+
 <body>
   <nav class="navbar" id="navbar">
     <div class="navbar-brand"><span class="om">🕉</span><span>Kumbh Mela Nashik</span></div>
@@ -126,14 +248,17 @@
       <li><a href="lost-found.html">Lost &amp; Found</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+      <li id="authNav"><a href="user-login.html" class="btn"
+          style="padding:6px 14px;border:1px solid var(--orange);color:var(--orange);">Login</a></li>
     </ul>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html">🏠 Home</a><a href="about.html">🐿 About</a>
+    <a href="index.html">🏠 Home</a><a href="about.html">📿 About</a>
     <a href="ghats.html">🌊 Ghat Maps</a><a href="facilities.html">🏥 Facilities</a>
     <a href="schedule.html">📅 Schedule</a><a href="lost-found.html">🔍 Lost &amp; Found</a>
     <a href="contact.html">📞 Contact</a><a href="emergency.html" style="color:#C0392B;">🚨 Emergency</a>
+    <a href="user-login.html" id="mobileAuthNav">🔑 Login / Register</a>
   </div>
 
   <div class="page-hero">
@@ -155,15 +280,16 @@
       <div class="ghat-card" onclick="focusGhat(0)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/ramkundghat.jpg"
-     onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Panchavati_Nashik_Ram_Kund.jpg/640px-Panchavati_Nashik_Ram_Kund.jpg'; this.onerror=null;"
-     alt="Ram Kund Ghat">
+            onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Panchavati_Nashik_Ram_Kund.jpg/640px-Panchavati_Nashik_Ram_Kund.jpg'; this.onerror=null;"
+            alt="Ram Kund Ghat">
           <span class="ghat-num">Ghat 1</span>
           <span class="ghat-badge">Primary Snan</span>
         </div>
         <div class="ghat-body">
           <h3>Ram Kund</h3>
           <div class="location">📍 Panchavati, Nashik</div>
-          <p>The most sacred ghat where Lord Rama bathed during exile. Primary site for all Shahi Snan processions. Water here is believed to never decompose.</p>
+          <p>The most sacred ghat where Lord Rama bathed during exile. Primary site for all Shahi Snan processions.
+            Water here is believed to never decompose.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Primary Snan</span>
             <span class="ghat-tag">Lord Rama</span>
@@ -180,14 +306,14 @@
       <div class="ghat-card" onclick="focusGhat(1)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/lakshmankund.png"
-               onerror="this.src='/assets/generated/hero-kumbh.dim_1920x1080.jpg'; this.onerror=null;"
-               alt="Lakshman Kund">
+            onerror="this.src='/assets/generated/hero-kumbh.dim_1920x1080.jpg'; this.onerror=null;" alt="Lakshman Kund">
           <span class="ghat-num">Ghat 2</span>
         </div>
         <div class="ghat-body">
           <h3>Lakshman Kund</h3>
           <div class="location">📍 Near Ram Kund, Panchavati</div>
-          <p>Adjacent to Ram Kund, dedicated to Lord Lakshmana. Known for pristine clarity year-round. A peaceful spot for pilgrims after the main Ram Kund bath.</p>
+          <p>Adjacent to Ram Kund, dedicated to Lord Lakshmana. Known for pristine clarity year-round. A peaceful spot
+            for pilgrims after the main Ram Kund bath.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Lord Lakshmana</span>
             <span class="ghat-tag">Ramayana</span>
@@ -204,15 +330,16 @@
       <div class="ghat-card" onclick="focusGhat(2)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/tapovan1.jpg"
-               onerror="this.style.background='linear-gradient(135deg,#F0FFF4,#DCFCE7)'; this.onerror=null;"
-               alt="Tapovan Ghat">
+            onerror="this.style.background='linear-gradient(135deg,#F0FFF4,#DCFCE7)'; this.onerror=null;"
+            alt="Tapovan Ghat">
           <span class="ghat-num">Ghat 3</span>
           <span class="ghat-badge">Meditation Zone</span>
         </div>
         <div class="ghat-body">
           <h3>Tapovan</h3>
           <div class="location">📍 Tapovan Road, Nashik</div>
-          <p>Serene forest-hermitage where sages Agastya and Valmiki meditated. Preferred by sadhus and yoga practitioners. Calm and away from main crowds.</p>
+          <p>Serene forest-hermitage where sages Agastya and Valmiki meditated. Preferred by sadhus and yoga
+            practitioners. Calm and away from main crowds.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Meditation</span>
             <span class="ghat-tag">Hermitage</span>
@@ -229,15 +356,16 @@
       <div class="ghat-card" onclick="focusGhat(3)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/sitagufa.webp"
-               onerror="this.style.background='linear-gradient(135deg,#FEF3FF,#FAE8FF)'; this.onerror=null;"
-               alt="Sita Gund">
+            onerror="this.style.background='linear-gradient(135deg,#FEF3FF,#FAE8FF)'; this.onerror=null;"
+            alt="Sita Gund">
           <span class="ghat-num">Ghat 4</span>
           <span class="ghat-badge">Women Pilgrims</span>
         </div>
         <div class="ghat-body">
           <h3>Sita Gufa</h3>
           <div class="location">📍 Panchavati, Nashik</div>
-          <p>Dedicated to Goddess Sita, where she performed her daily rituals. Specially venerated by women pilgrims, with the Sita Temple overlooking the Godavari.</p>
+          <p>Dedicated to Goddess Sita, where she performed her daily rituals. Specially venerated by women pilgrims,
+            with the Sita Temple overlooking the Godavari.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Goddess Sita</span>
             <span class="ghat-tag">Women Pilgrims</span>
@@ -254,15 +382,16 @@
       <div class="ghat-card" onclick="focusGhat(4)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/ahilyaghat.webp"
-               onerror="this.style.background='linear-gradient(135deg,#FFFBEB,#FEF3C7)'; this.onerror=null;"
-               alt="Ahilyadevi Ghat">
+            onerror="this.style.background='linear-gradient(135deg,#FFFBEB,#FEF3C7)'; this.onerror=null;"
+            alt="Ahilyadevi Ghat">
           <span class="ghat-num">Ghat 5</span>
           <span class="ghat-badge">Maratha Heritage</span>
         </div>
         <div class="ghat-body">
           <h3>Ramkund Ahilyadevi Ghat</h3>
           <div class="location">📍 Panchavati, Nashik</div>
-          <p>Built by Maratha Queen Ahilyabai Holkar in the 18th century. Beautiful architecture hosts major Akhara processions during Shahi Snan ceremonies.</p>
+          <p>Built by Maratha Queen Ahilyabai Holkar in the 18th century. Beautiful architecture hosts major Akhara
+            processions during Shahi Snan ceremonies.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Ahilyabai Holkar</span>
             <span class="ghat-tag">Maratha Heritage</span>
@@ -279,15 +408,16 @@
       <div class="ghat-card" onclick="focusGhat(5)" style="cursor:pointer">
         <div class="ghat-img">
           <img src="images/kapaleshwar.jpg"
-               onerror="this.style.background='linear-gradient(135deg,#001a0a,#004020)'; this.onerror=null;"
-               alt="Kapileshwar Ghat">
+            onerror="this.style.background='linear-gradient(135deg,#001a0a,#004020)'; this.onerror=null;"
+            alt="Kapileshwar Ghat">
           <span class="ghat-num">Ghat 6</span>
           <span class="ghat-badge">Shiva Devotees</span>
         </div>
         <div class="ghat-body">
           <h3>Kapaleshwar Ghat</h3>
           <div class="location">📍 Old Nashik, Nashik</div>
-          <p>Named after sage Kapila, this ghat houses the ancient Kapaleshwar Mahadev temple. Major site for Shaiva devotees and Mahashivratri celebrations during Kumbh.</p>
+          <p>Named after sage Kapila, this ghat houses the ancient Kapaleshwar Mahadev temple. Major site for Shaiva
+            devotees and Mahashivratri celebrations during Kumbh.</p>
           <div class="ghat-tags">
             <span class="ghat-tag">Sage Kapaleshwar</span>
             <span class="ghat-tag">Shiva Temple</span>
@@ -312,7 +442,8 @@
       <div class="map-legend">
         <div class="legend-item"><span class="legend-dot" style="background:#B84C1A;"></span> Primary Snan Ghat</div>
         <div class="legend-item"><span class="legend-dot" style="background:#C8960C;"></span> Secondary Ghat</div>
-        <div class="legend-item"><span class="legend-dot" style="background:#5A8A3A;"></span> Hermitage / Meditation</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#5A8A3A;"></span> Hermitage / Meditation
+        </div>
         <div class="legend-item">📍 Tap marker for details &bull; Scroll / pinch to zoom</div>
       </div>
     </div>
@@ -320,10 +451,21 @@
 
   <footer class="footer">
     <div class="footer-grid">
-      <div class="footer-col"><h4>🕉 Kumbh Mela Nashik</h4><p>Sacred Simhastha Kumbh on the Godavari.</p></div>
-      <div class="footer-col"><h4>Quick Links</h4><a href="facilities.html">Facilities &amp; Stay</a><a href="schedule.html">Schedule 2027</a><a href="lost-found.html">Lost &amp; Found</a></div>
-      <div class="footer-col"><h4>Support</h4><a href="emergency.html">Emergency</a><a href="contact.html">Contact Us</a></div>
-      <div class="footer-col"><h4>Emergency</h4><p>Police: 100 | Ambulance: 108</p></div>
+      <div class="footer-col">
+        <h4>🕉 Kumbh Mela Nashik</h4>
+        <p>Sacred Simhastha Kumbh on the Godavari.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4><a href="facilities.html">Facilities &amp; Stay</a><a href="schedule.html">Schedule
+          2027</a><a href="lost-found.html">Lost &amp; Found</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4><a href="emergency.html">Emergency</a><a href="contact.html">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Emergency</h4>
+        <p>Police: 100 | Ambulance: 108</p>
+      </div>
     </div>
     <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
     <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
@@ -331,8 +473,24 @@
 
   <script>
     // NAVBAR
-    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
-    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+    window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', scrollY > 60));
+    document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.toggle('open'));
+
+    // Check login state
+    if (localStorage.getItem("loggedIn") === "true") {
+      const userRole = localStorage.getItem("userRole") || "PILGRIM";
+      const userName = localStorage.getItem("userName") || "Pilgrim";
+      const targetPage = (userRole === "ADMIN" || userRole === "VOLUNTEER") ? "lf-admin.html" : "lost-found.html";
+      const authNav = document.getElementById("authNav");
+      if (authNav) {
+        authNav.innerHTML = `<a href="${targetPage}" class="btn" style="padding:6px 14px;background:var(--orange);color:white;">👤 ${userName} (${userRole})</a>`;
+      }
+      const mobileAuth = document.getElementById("mobileAuthNav");
+      if (mobileAuth) {
+        mobileAuth.href = targetPage;
+        mobileAuth.innerText = `👤 ${userName} (${userRole})`;
+      }
+    }
 
     // GHAT DATA
     const ghats = [
@@ -417,7 +575,7 @@
           box-shadow:0 3px 12px rgba(0,0,0,0.4);
           display:flex;align-items:center;justify-content:center;
         ">
-          <span style="transform:rotate(45deg);font-size:14px;font-weight:700;">${i+1}</span>
+          <span style="transform:rotate(45deg);font-size:14px;font-weight:700;">${i + 1}</span>
         </div>`,
         iconSize: [34, 34],
         iconAnchor: [17, 34],
@@ -451,4 +609,5 @@
     map.fitBounds(group.getBounds().pad(0.15));
   </script>
 </body>
+
 </html>

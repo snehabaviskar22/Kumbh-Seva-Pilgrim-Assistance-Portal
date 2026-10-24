@@ -79,36 +79,37 @@
     <span class="om-decor">🔍</span>
     <h1>Lost &amp; Found Portal</h1>
     <p>Report, search, and track lost or found items during Kumbh Mela 2027</p>
+    <div id="userWelcomeBar" style="margin-top:16px; display:inline-flex; align-items:center; gap:12px; background:#FFFFFF; padding:8px 20px; border-radius:30px; border:1px solid rgba(232,100,10,0.3); font-size:0.9rem; box-shadow:0 4px 14px rgba(232,100,10,0.08);">
+      <span id="welcomeText" style="color:var(--text-main); font-weight:600;">👋 Welcome, Pilgrim</span>
+      <span id="roleBadge" class="badge badge-pending">PILGRIM</span>
+      <span id="adminPanelLink" style="display:none;">
+        <a href="lf-admin.html" class="btn btn-gold" style="padding:4px 14px; font-size:0.8rem;">🛡️ Management Panel</a>
+      </span>
+    </div>
   </div>
 
   <section class="section">
     <div class="stats-row">
-      
-<div class="stat-box red">
-  <span class="s-num" id="lostCount">0</span>
-  <span class="s-lbl">Items Lost</span>
-</div>
+      <div class="stat-box red">
+        <span class="s-num" id="lostCount">0</span>
+        <span class="s-lbl">Items Lost</span>
+      </div>
 
-<div class="stat-box green">
-  <span class="s-num" id="foundCount">0</span>
-  <span class="s-lbl">Items Found</span>
-</div>
+      <div class="stat-box green">
+        <span class="s-num" id="foundCount">0</span>
+        <span class="s-lbl">Items Found</span>
+      </div>
 
-<div class="stat-box blue">
+      <div class="stat-box blue">
+        <span class="s-num" id="returnedCount">0</span>
+        <span class="s-lbl">Returned / Reunited</span>
+      </div>
 
-<span class="s-num" id="returnedCount">0</span>
-
-  <span class="s-lbl">Returned</span>
-</div>
-
-<div class="stat-box gold">
-  <span class="s-num" id="pendingCount">0</span>
-
-  <span class="s-lbl">Pending Claims</span>
-</div>
-
-
-</div>
+      <div class="stat-box gold">
+        <span class="s-num" id="pendingCount">0</span>
+        <span class="s-lbl">Pending Claims</span>
+      </div>
+    </div>
 
     <div class="lf-actions">
       <a href="lf-report-lost.html" class="lf-action-card lost" style="text-decoration:none;">
@@ -134,7 +135,7 @@
     </div>
 
     <div class="search-bar">
-      <input type="text" placeholder="Search by item name, ID, or category..." id="searchInput">
+      <input type="text" placeholder="Search by item name, ID, or category..." id="searchInput" oninput="doSearch()">
       <button onclick="doSearch()">Search</button>
     </div>
 
@@ -144,58 +145,13 @@
         <button class="tab-btn" onclick="filterItems('lost',this)">Lost</button>
         <button class="tab-btn" onclick="filterItems('found',this)">Found</button>
       </div>
-      <div style="border:1px solid rgba(232,100,10,0.12);border-radius:12px;overflow:hidden;">
+      <div style="border:1px solid rgba(232,100,10,0.12);border-radius:12px;overflow:hidden;background:#FFFFFF;">
         <div class="item-row header">
           <span>ID</span><span>Item</span><span>Category</span>
           <span>Location</span><span>Date</span><span>Status</span>
         </div>
-        <div class="item-row" data-type="lost">
-          <span class="item-id">#LF001</span>
-          <span class="item-name">👜 Black Backpack</span>
-          <span class="item-cat">Bag/Luggage</span>
-          <span class="item-loc">Ram Kund</span>
-          <span class="item-date">Jul 21</span>
-          <span><span class="badge badge-lost">Lost</span></span>
-        </div>
-        <div class="item-row" data-type="found">
-          <span class="item-id">#LF002</span>
-          <span class="item-name">📱 Samsung Galaxy</span>
-          <span class="item-cat">Electronics</span>
-          <span class="item-loc">Tapovan</span>
-          <span class="item-date">Jul 21</span>
-          <span><span class="badge badge-found">Found</span></span>
-        </div>
-        <div class="item-row" data-type="lost">
-          <span class="item-id">#LF003</span>
-          <span class="item-name">💳 Wallet (Brown)</span>
-          <span class="item-cat">Wallet/Money</span>
-          <span class="item-loc">Lakshman Kund</span>
-          <span class="item-date">Jul 22</span>
-          <span><span class="badge badge-lost">Lost</span></span>
-        </div>
-        <div class="item-row" data-type="found">
-          <span class="item-id">#LF004</span>
-          <span class="item-name">👶 Child (Boy, ~5 yrs)</span>
-          <span class="item-cat">Person</span>
-          <span class="item-loc">Ram Kund Gate</span>
-          <span class="item-date">Jul 22</span>
-          <span><span class="badge badge-returned">Reunited</span></span>
-        </div>
-        <div class="item-row" data-type="lost">
-          <span class="item-id">#LF005</span>
-          <span class="item-name">💍 Gold Necklace</span>
-          <span class="item-cat">Jewellery</span>
-          <span class="item-loc">Sita Gund</span>
-          <span class="item-date">Jul 23</span>
-          <span><span class="badge badge-pending">Pending</span></span>
-        </div>
-        <div class="item-row" data-type="found">
-          <span class="item-id">#LF006</span>
-          <span class="item-name">🏴 Black Purse</span>
-          <span class="item-cat">Bag/Luggage</span>
-          <span class="item-loc">Kapileshwar</span>
-          <span class="item-date">Jul 24</span>
-          <span><span class="badge badge-found">Found</span></span>
+        <div id="recentItemsContainer">
+          <div style="padding:30px; text-align:center; color:var(--text-muted);">Loading recent records...</div>
         </div>
       </div>
     </div>
@@ -272,67 +228,99 @@ document.addEventListener("DOMContentLoaded", function () {
 
   };
 
-  /* LOGIN CHECK */
+  /* LOGIN CHECK & USER ROLE */
   if(localStorage.getItem("loggedIn") !== "true"){
-
-      alert("Please login first");
-
       window.location.href = "user-login.html";
+  } else {
+      const userName = localStorage.getItem("userName") || "Devotee";
+      const userRole = localStorage.getItem("userRole") || "PILGRIM";
+      
+      const welcomeText = document.getElementById("welcomeText");
+      if (welcomeText) welcomeText.textContent = `👋 Welcome, ${userName}`;
+      
+      const roleBadge = document.getElementById("roleBadge");
+      if (roleBadge) {
+        roleBadge.textContent = userRole;
+        if (userRole === "ADMIN") roleBadge.className = "badge badge-lost";
+        else if (userRole === "VOLUNTEER") roleBadge.className = "badge badge-found";
+        else roleBadge.className = "badge badge-pending";
+      }
 
+      if (userRole === "ADMIN" || userRole === "VOLUNTEER") {
+        const link = document.getElementById("adminPanelLink");
+        if (link) link.style.display = "inline-block";
+      }
   }
 
   /* DASHBOARD API */
   async function loadDashboardData(){
-
       try{
-
-          const response =
-          await fetch("http://localhost:8080/api/dashboard");
-
+          const response = await fetch("http://localhost:8080/api/dashboard");
           const data = await response.json();
 
-          document.getElementById("lostCount").innerText =
-          data.lostCount;
+          document.getElementById("lostCount").innerText = data.lostCount ?? 0;
+          document.getElementById("foundCount").innerText = data.foundCount ?? 0;
+          document.getElementById("returnedCount").innerText = data.returnedCount ?? 0;
+          document.getElementById("pendingCount").innerText = data.pendingCount ?? 0;
 
-          document.getElementById("foundCount").innerText =
-          data.foundCount;
+          // Render Live Recent Items Feed
+          const container = document.getElementById("recentItemsContainer");
+          if (container && data.recentItems) {
+            if (data.recentItems.length === 0) {
+              container.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-muted);">No reports logged yet.</div>';
+            } else {
+              container.innerHTML = data.recentItems.map(item => {
+                let badgeClass = "badge-lost";
+                let st = (item.status || "").toLowerCase();
+                if (st.contains ? st.contains("return") : st.includes("return")) badgeClass = "badge-returned";
+                else if (st.includes("found")) badgeClass = "badge-found";
+                else if (st.includes("claim")) badgeClass = "badge-pending";
 
-          document.getElementById("returnedCount").innerText =
-          data.returnedCount;
-
-          document.getElementById("pendingCount").innerText =
-          data.pendingCount;
-
+                const icon = item.type === "found" ? "📦" : "🚫";
+                return `
+                  <div class="item-row" data-type="${item.type}">
+                    <span class="item-id">${item.ref}</span>
+                    <span class="item-name">
+                      <a href="lf-item-details.html?id=${item.id}&type=${item.type}" style="color:var(--text-main); font-weight:600;">
+                        ${icon} ${item.name || "Item"}
+                      </a>
+                    </span>
+                    <span class="item-cat">${item.category || "General"}</span>
+                    <span class="item-loc">📍 ${item.location || "Nashik"}</span>
+                    <span class="item-date">${item.date || "Recent"}</span>
+                    <span><span class="badge ${badgeClass}">${item.status || "Logged"}</span></span>
+                  </div>
+                `;
+              }).join('');
+            }
+          }
       }
       catch(error){
-
           console.log("Dashboard Error:", error);
-
       }
-
   }
 
   loadDashboardData();
-
 });
 
 /* LOGOUT */
 function logout(){
-
    localStorage.removeItem("loggedIn");
+   localStorage.removeItem("userRole");
+   localStorage.removeItem("userName");
+   localStorage.removeItem("userEmail");
 
    fetch("http://localhost:8080/logout", {
       credentials: "include"
    })
    .then(() => {
-
       window.location.href = "index.html";
-
    })
-   .catch(err => console.error(err));
-
+   .catch(err => {
+      console.error(err);
+      window.location.href = "index.html";
+   });
 }
-
 </script>
 
 

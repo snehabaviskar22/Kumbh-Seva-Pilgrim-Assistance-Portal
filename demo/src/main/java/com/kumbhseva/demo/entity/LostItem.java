@@ -1,4 +1,3 @@
-
 package com.kumbhseva.demo.entity;
 
 import jakarta.persistence.*;
@@ -12,11 +11,15 @@ public class LostItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId; // Foreign Key reference to users(id)
+
     private String fullName;
     private String phoneNumber;
     private String email;
 
+    @Column(nullable = false)
     private String itemName;
+
     private String category;
 
     @Column(length = 1000)
@@ -27,6 +30,7 @@ public class LostItem {
 
     private String imageUrl;
 
+    // Person fields
     private Integer age;
     private String height;
     private String gender;
@@ -34,11 +38,39 @@ public class LostItem {
     @Column(length = 1000)
     private String physicalIdentification;
 
-    // ===== NEW STATUS FIELD =====
-    private String status;
+    private String status = "Lost"; // Lost, Under Review, Verified, Returned, Closed
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (updatedAt == null) updatedAt = LocalDateTime.now();
+        if (status == null) status = "Lost";
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getFullName() {
@@ -145,13 +177,27 @@ public class LostItem {
         this.physicalIdentification = physicalIdentification;
     }
 
-    // ===== STATUS GETTER/SETTER =====
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

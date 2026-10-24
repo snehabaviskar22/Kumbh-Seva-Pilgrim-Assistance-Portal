@@ -149,6 +149,10 @@
 
   const form = document.getElementById("foundForm");
   const formData = new FormData(form);
+  const savedUserId = localStorage.getItem("userId");
+  if (savedUserId) {
+    formData.append("userId", savedUserId);
+  }
 
   fetch("http://localhost:8080/found-items", {
     method: "POST",

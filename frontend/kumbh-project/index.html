@@ -142,7 +142,7 @@
       <span>Kumbh Mela Nashik</span>
     </div>
     <ul class="nav-links">
-      <li><a href="home.html" class="active">Home</a></li>
+      <li><a href="index.html" class="active">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="ghats.html">Ghat Maps</a></li>
       <li><a href="facilities.html">Facilities</a></li>
@@ -150,18 +150,20 @@
       <li><a href="lost-found.html">Lost &amp; Found</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="emergency.html" class="btn-emergency">🚨 Emergency</a></li>
+      <li id="authNav"><a href="user-login.html" class="btn" style="padding:6px 14px;border:1px solid var(--orange);color:var(--orange);">Login</a></li>
     </ul>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </nav>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="home.html">🏠 Home</a>
-    <a href="about.html">🐿 About</a>
+    <a href="index.html">🏠 Home</a>
+    <a href="about.html">📿 About</a>
     <a href="ghats.html">🌊 Ghat Maps</a>
     <a href="facilities.html">🏥 Facilities</a>
     <a href="schedule.html">📅 Schedule</a>
     <a href="lost-found.html">🔍 Lost &amp; Found</a>
     <a href="contact.html">📞 Contact</a>
     <a href="emergency.html" style="color:#C0392B;">🚨 Emergency</a>
+    <a href="user-login.html" id="mobileAuthNav">🔑 Login / Register</a>
   </div>
 
   <!-- HERO -->
@@ -298,9 +300,9 @@
       <a href="ghats.html" class="ql-item"><span class="icon">🌊</span><span>Ghat Maps</span></a>
       <a href="facilities.html" class="ql-item"><span class="icon">🏥</span><span>Facilities</span></a>
       <a href="schedule.html" class="ql-item"><span class="icon">📅</span><span>Schedule</span></a>
-      <a href="about.html" class="ql-item"><span class="icon">🐿</span><span>About Kumbh</span></a>
+      <a href="about.html" class="ql-item"><span class="icon">📿</span><span>About Kumbh</span></a>
       <a href="contact.html" class="ql-item"><span class="icon">📞</span><span>Contact</span></a>
-      <a href="user-login.html" class="ql-item"></a><span class="icon">🔍</span><span>Lost &amp; Found</span></a>
+      <a href="lost-found.html" class="ql-item"><span class="icon">🔍</span><span>Lost &amp; Found</span></a>
       <a href="emergency.html" class="ql-item danger"><span class="icon">🚨</span><span>Emergency</span></a>
     </div>
   </section>
@@ -420,6 +422,22 @@
     }
     let autoTimer = setInterval(()=>goTo(current+1), 4500);
     dots.forEach((d,i)=>d.addEventListener('click',()=>{clearInterval(autoTimer);goTo(i);autoTimer=setInterval(()=>goTo(current+1),4500);}));
+
+    // Update Auth Nav if logged in
+    if (localStorage.getItem("loggedIn") === "true") {
+      const userRole = localStorage.getItem("userRole") || "PILGRIM";
+      const userName = localStorage.getItem("userName") || "Pilgrim";
+      const targetPage = (userRole === "ADMIN" || userRole === "VOLUNTEER") ? "lf-admin.html" : "lost-found.html";
+      const authNav = document.getElementById("authNav");
+      if (authNav) {
+        authNav.innerHTML = `<a href="${targetPage}" class="btn" style="padding:6px 14px;background:var(--orange);color:white;">👤 ${userName} (${userRole})</a>`;
+      }
+      const mobileAuth = document.getElementById("mobileAuthNav");
+      if (mobileAuth) {
+        mobileAuth.href = targetPage;
+        mobileAuth.innerText = `👤 ${userName} (${userRole})`;
+      }
+    }
   </script>
 </body>
 </html>

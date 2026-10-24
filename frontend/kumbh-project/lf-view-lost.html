@@ -61,7 +61,8 @@
         <option value="">All Categories</option>
         <option>Bag / Luggage</option><option>Electronics</option>
         <option>Wallet / Money</option><option>Jewellery</option>
-        <option>Documents</option><option>Clothing</option><option>Other</option>
+        <option>Documents</option><option>Clothing</option>
+        <option>Child / Person</option><option>Other</option>
       </select>
       <select id="locFilter" onchange="filterLost()">
         <option value="">All Locations</option>
@@ -71,65 +72,8 @@
       </select>
     </div>
     <div class="items-grid" id="itemsGrid">
-      <div class="item-card" data-cat="Bag / Luggage" data-loc="Ram Kund">
-        <div class="ic-head"><span class="ic-id">#LF001</span><span class="badge badge-lost">Lost</span></div>
-        <div class="ic-name">👜 Black Backpack (Nike)</div>
-        <div class="ic-cat">Bag / Luggage</div>
-        <div class="ic-desc">Large black Nike backpack. Contains laptop, charger, yellow notebook. Zipper broken on left pocket.</div>
-        <div class="ic-meta"><span>📍 Ram Kund</span><span>Jul 21, 2027 • 9:30 AM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
-      </div>
-      <div class="item-card" data-cat="Wallet / Money" data-loc="Lakshman Kund">
-        <div class="ic-head"><span class="ic-id">#LF003</span><span class="badge badge-lost">Lost</span></div>
-        <div class="ic-name">💳 Brown Leather Wallet</div>
-        <div class="ic-cat">Wallet / Money</div>
-        <div class="ic-desc">Brown leather wallet. Contains Aadhaar card, some cash (~₹1500), and a family photo. Small scratch on corner.</div>
-        <div class="ic-meta"><span>📍 Lakshman Kund</span><span>Jul 22, 2027 • 2:15 PM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
-      </div>
-      <div class="item-card" data-cat="Jewellery" data-loc="Sita Gund">
-        <div class="ic-head"><span class="ic-id">#LF005</span><span class="badge badge-pending">Pending</span></div>
-        <div class="ic-name">💍 Gold Necklace</div>
-        <div class="ic-cat">Jewellery</div>
-        <div class="ic-desc">22K gold necklace with Om pendant. Belonged to elderly mother. Great sentimental value. Reward offered.</div>
-        <div class="ic-meta"><span>📍 Sita Gund</span><span>Jul 23, 2027 • 11:00 AM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
-      </div>
-      <div class="item-card" data-cat="Electronics" data-loc="Tapovan">
-        <div class="ic-head"><span class="ic-id">#LF007</span><span class="badge badge-lost">Lost</span></div>
-        <div class="ic-name">📷 Canon Camera (EOS M50)</div>
-        <div class="ic-cat">Electronics</div>
-        <div class="ic-desc">Black Canon EOS M50 mirrorless camera. Silver sticker on bottom. Memory card with family photos inside.</div>
-        <div class="ic-meta"><span>📍 Tapovan</span><span>Jul 24, 2027 • 4:00 PM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
-      </div>
-      <div class="item-card" data-cat="Documents" data-loc="Ram Kund">
-        <div class="ic-head"><span class="ic-id">#LF009</span><span class="badge badge-lost">Lost</span></div>
-        <div class="ic-name">💼 Document Folder</div>
-        <div class="ic-cat">Documents</div>
-        <div class="ic-desc">Blue plastic document folder containing passport, train tickets, and hotel booking papers. Name: Ramesh Gupta.</div>
-        <div class="ic-meta"><span>📍 Ram Kund</span><span>Jul 25, 2027 • 8:00 AM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
-      </div>
-      <div class="item-card" data-cat="Bag / Luggage" data-loc="Kapileshwar Ghat">
-        <div class="ic-head"><span class="ic-id">#LF011</span><span class="badge badge-lost">Lost</span></div>
-        <div class="ic-name">🧳 Red Trolley Bag</div>
-        <div class="ic-cat">Bag / Luggage</div>
-        <div class="ic-desc">Red hard-shell trolley suitcase (medium size). Name tag: Sunita Sharma. Contains clothes and medicines.</div>
-        <div class="ic-meta"><span>📍 Kapileshwar Ghat</span><span>Jul 26, 2027 • 3:30 PM</span></div>
-        <div class="ic-actions">
-          <a href="lf-item-details.html" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
-        </div>
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+        Loading reported lost items from registry...
       </div>
     </div>
   </section>
@@ -143,17 +87,96 @@
   <script>
     window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
     document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+
+    let allLostItems = [];
+
+    window.addEventListener('DOMContentLoaded', loadLostItems);
+
+    function loadLostItems() {
+      fetch("http://localhost:8080/lost-items")
+        .then(res => res.json())
+        .then(data => {
+          allLostItems = data;
+          renderLostCards(data);
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("itemsGrid").innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--orange-dark);">
+              Could not load items from server. Please verify backend is running on localhost:8080.
+            </div>`;
+        });
+    }
+
+    function renderLostCards(items) {
+      const grid = document.getElementById("itemsGrid");
+      if (!items || items.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+            No lost items match your search.
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        let badgeClass = "badge-lost";
+        const st = (item.status || "Lost").toLowerCase();
+        if (st.includes("return") || st.includes("reunited")) badgeClass = "badge-returned";
+        else if (st.includes("found")) badgeClass = "badge-found";
+        else if (st.includes("pending")) badgeClass = "badge-pending";
+
+        const photoHtml = item.imageUrl ? 
+          `<img src="http://localhost:8080${item.imageUrl}" alt="${item.itemName}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:12px;" onerror="this.style.display='none';">` : "";
+
+        return `
+          <div class="item-card" data-cat="${item.category || ''}" data-loc="${item.location || ''}">
+            <div class="ic-head">
+              <span class="ic-id">#LF${String(item.id).padStart(3, '0')}</span>
+              <span class="badge ${badgeClass}">${item.status || "Lost"}</span>
+            </div>
+            ${photoHtml}
+            <div class="ic-name">🚫 ${escapeHtml(item.itemName || "Unnamed Item")}</div>
+            <div class="ic-cat">${escapeHtml(item.category || "General")}</div>
+            <div class="ic-desc">${escapeHtml(item.description || "No description provided.")}</div>
+            <div class="ic-meta">
+              <span>📍 ${escapeHtml(item.location || "Nashik")}</span>
+              <span>${formatDate(item.dateTimeLost)}</span>
+            </div>
+            <div class="ic-actions">
+              <a href="lf-item-details.html?id=${item.id}&type=lost" class="btn btn-outline" style="padding:7px 16px;font-size:0.82rem;">View Details</a>
+              <a href="lf-track.html?id=${item.id}" class="btn btn-primary" style="padding:7px 16px;font-size:0.82rem;">Track</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "Recent";
+      const d = new Date(dateStr);
+      if (isNaN(d)) return "Recent";
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + " • " + d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
     function filterLost(){
-      const q=document.getElementById('searchBox').value.toLowerCase();
-      const cat=document.getElementById('catFilter').value;
-      const loc=document.getElementById('locFilter').value;
-      document.querySelectorAll('.item-card').forEach(c=>{
-        const text=c.textContent.toLowerCase();
-        const matchQ=!q||text.includes(q);
-        const matchCat=!cat||c.dataset.cat===cat;
-        const matchLoc=!loc||c.dataset.loc===loc;
-        c.style.display=(matchQ&&matchCat&&matchLoc)?'block':'none';
+      const q = document.getElementById('searchBox').value.toLowerCase().trim();
+      const cat = document.getElementById('catFilter').value;
+      const loc = document.getElementById('locFilter').value;
+
+      const filtered = allLostItems.filter(item => {
+        const text = ((item.itemName || '') + ' ' + (item.description || '') + ' ' + (item.location || '') + ' ' + (item.category || '')).toLowerCase();
+        const matchQ = !q || text.includes(q);
+        const matchCat = !cat || (item.category === cat || (item.category && item.category.includes(cat)));
+        const matchLoc = !loc || (item.location === loc || (item.location && item.location.includes(loc)));
+        return matchQ && matchCat && matchLoc;
       });
+
+      renderLostCards(filtered);
     }
   </script>
 </body>

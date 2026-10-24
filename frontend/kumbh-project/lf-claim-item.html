@@ -317,68 +317,74 @@ window.addEventListener('scroll', () => {
 document.getElementById('hamburger')
 .addEventListener('click', () => {
 
-  document.getElementById('mobileMenu')
-  .classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
 
+// Auto-fill Item ID and User Name from URL and LocalStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (id) {
+    const itemInput = document.getElementById("itemId");
+    if (itemInput) itemInput.value = id.startsWith("#LF") ? id : ("#LF" + id);
+  }
+
+  const savedName = localStorage.getItem("userName");
+  if (savedName && savedName !== "Pilgrim") {
+    const nameInput = document.getElementById("fullName");
+    if (nameInput && !nameInput.value) nameInput.value = savedName;
+  }
 });
 
 function submitClaim(e){
-
     e.preventDefault();
 
+    const rawItemId = document.getElementById("itemId").value.replace(/[^0-9]/g, "");
+    const savedUserId = localStorage.getItem("userId");
+
     const data = {
-
-        fullName:
-        document.getElementById("fullName").value,
-
-        phone:
-        document.getElementById("phone").value,
-
-        itemId:
-        document.getElementById("itemId").value.replace("#LF",""),
-
-        proof:
-        document.getElementById("proof").value,
-
-        idType:
-        document.getElementById("idType").value,
-
-        idNumber:
-        document.getElementById("idNumber").value,
-
-        notes:
-        document.getElementById("notes").value
-
+        fullName: document.getElementById("fullName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        itemId: rawItemId ? parseInt(rawItemId, 10) : null,
+        userId: savedUserId ? parseInt(savedUserId, 10) : null,
+        proof: document.getElementById("proof").value.trim(),
+        idType: document.getElementById("idType").value,
+        idNumber: document.getElementById("idNumber").value.trim(),
+        notes: document.getElementById("notes").value.trim()
     };
 
-    fetch("http://localhost:8080/api/claims", {
-
+    fetch("http://localhost:8080/claims", {
         method: "POST",
-
         headers: {
             "Content-Type": "application/json"
         },
-
         body: JSON.stringify(data)
-
     })
-
-    .then(res => res.json())
-
+    .then(res => {
+        if (!res.ok) throw new Error("Server returned " + res.status);
+        return res.json();
+    })
     .then(response => {
-
         document.getElementById("claimForm").style.display = "none";
-
-        document.getElementById("successBox").style.display = "block";
-
+        const successBox = document.getElementById("successBox");
+        successBox.innerHTML = `
+          <h3>🙏 Claim Submitted Successfully!</h3>
+          <p style="font-size:1.1rem; color:var(--orange); font-weight:700; margin:10px 0;">Claim Reference: #C${String(response.id).padStart(3, '0')} for Item #LF${response.itemId || rawItemId}</p>
+          <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.6;">
+            Your ownership proof has been routed to the Mela Lost &amp; Found Administration desk.<br>
+            Please carry your original <strong>${data.idType}</strong> when visiting the Lost &amp; Found center for physical verification.
+          </p>
+          <div style="margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="lf-track.html?id=${response.id}" class="btn btn-primary">📱 Track Claim Status</a>
+            <a href="lost-found.html" class="btn btn-outline">Back to L&amp;F Home</a>
+          </div>
+        `;
+        successBox.style.display = "block";
+        successBox.scrollIntoView({ behavior: 'smooth' });
     })
-
     .catch(err => {
-
-        console.log(err);
-
-        alert("Error submitting claim");
-
+        console.error(err);
+        alert("Error submitting claim. Please ensure backend is running on localhost:8080.");
     });
 
     return false;

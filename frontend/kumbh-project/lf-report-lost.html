@@ -161,25 +161,44 @@
 </div>
   </div>
 
-  <button type="submit" class="btn btn-danger" style="width:100%;">
-    Submit
-  </button>
+    <button type="submit" id="submitBtn" class="btn btn-danger" style="width:100%; margin-top:10px;">
+      Submit Lost Report →
+    </button>
+  </form>
 
-</form>
-    <div class="ref-box" id="refBox">
-      <h3>✅ Submitted!</h3>
-      <p>We will contact you soon.</p>
+  <div class="ref-box" id="refBox">
+    <h3>🙏 Report Registered Successfully!</h3>
+    <div class="ref-num" id="refNum" style="font-size:2rem; font-weight:800; color:var(--orange); margin:12px 0;">#LF---</div>
+    <p>Please note your <strong>Reference ID</strong> to track the search progress.<br>Our field volunteer teams and police stations have been notified.</p>
+    <div style="margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="lf-track.html" class="btn btn-primary">📱 Track Report Status</a>
+      <a href="lost-found.html" class="btn btn-outline">Back to L&amp;F Home</a>
     </div>
+  </div>
 
   </div>
 </section>
 
+<footer class="footer">
+  <div style="text-align:center;padding-bottom:20px;">
+    <div class="footer-shimmer">🕉 जय श्री राम 🕉</div>
+    <p class="footer-copy">© 2027 Kumbh Seva Pilgrim Portal, Nashik.</p>
+  </div>
+</footer>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  // Pre-fill user name if logged in
+  const savedName = localStorage.getItem("userName");
+  if (savedName && savedName !== "Pilgrim") {
+    const nameInput = document.getElementById("name");
+    if (nameInput && !nameInput.value) nameInput.value = savedName;
+  }
 
   const category = document.getElementById("itemCategory");
   const personFields = document.getElementById("personFields");
   const form = document.getElementById("lostForm");
+  const submitBtn = document.getElementById("submitBtn");
 
   category.addEventListener("change", function () {
     if (this.value === "Child / Person") {
@@ -191,26 +210,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting Report...";
 
     const formData = new FormData(form);
+    const savedUserId = localStorage.getItem("userId");
+    if (savedUserId) {
+      formData.append("userId", savedUserId);
+    }
 
     fetch("http://localhost:8080/report-lost", {
       method: "POST",
       body: formData
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
-      alert("Data saved successfully!");
-      form.reset();
-      personFields.style.display = "none";
+      const refId = data.id ? ("#LF" + data.id) : "#LF001";
+      document.getElementById("refNum").innerText = refId;
+      document.getElementById("refBox").style.display = "block";
+      form.style.display = "none";
+      document.getElementById("refBox").scrollIntoView({ behavior: 'smooth' });
     })
     .catch(err => {
-      alert("Error saving data");
-      console.log(err);
+      console.error(err);
+      alert("Error saving report. Please make sure all required fields are filled and the backend is running.");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit Lost Report →";
     });
-
   });
-
 });
 </script>
 </body>
