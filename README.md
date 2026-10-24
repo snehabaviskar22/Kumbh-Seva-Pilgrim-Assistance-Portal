@@ -45,27 +45,28 @@ The system uses **6 relational SQL tables** with foreign key constraints:
 ## 📸 Screenshots
 
 ### 1. Home Page & Holy Ghats Navigation
-![Home Page](screenshots/01_homepage.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5456843c-e268-4475-82d7-41745a02dc36" />
+
 *Interactive landing page featuring Kumbh Mela services and ghat locations.*
 
 ### 2. Lost & Found Portal
-![Lost & Found Portal](screenshots/02_lost_found_portal.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8697e695-5d6a-42dc-8b43-f3d2ea3941eb" />
+
 *Central dashboard displaying live database statistics and reporting shortcuts.*
 
 ### 3. Report Lost Belonging / Missing Person
-![Report Lost Item](screenshots/03_report_lost.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f021beda-354d-437e-b563-4d417aa97053" />
+
 *Submission form with category filters, last-seen location, and image upload.*
 
-### 4. Browse Found Items Catalog
-![View Found Items](screenshots/04_view_found_items.png)
-*Searchable catalog with real-time status and item detail views.*
+### 4. Item Claim & Verification Form
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cc6cff8c-4c91-45b8-a204-45e76c264b0b" />
 
-### 5. Item Claim & Verification Form
-![Claim Submission](screenshots/05_claim_item.png)
 *Claim verification form requiring government ID proof.*
 
-### 6. Admin Command Center & Volunteer Approval
-![Admin Dashboard](screenshots/06_admin_dashboard.png)
+### 5. Admin Command Center & Volunteer Approval
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0ea05aea-73b2-4fd9-91ab-6eab9e8926f8" />
+
 *Administrative dashboard for live metrics, claim reviews, and volunteer approvals.*
 
 ---
